@@ -1,0 +1,55 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="samir.css">
+    <style>
+        body{
+			background-color: black;
+			color: white;
+		}
+		.container{
+			width: 100%;
+			max-width:1080px;
+		}
+		.btn{
+			padding:10px;
+			margin:5px;
+			width: fit-content;
+			height:fit-content;
+			font-size: 16px;
+		}
+    </style>
+</head>
+<body>
+    <div id="main" class="flex full column center">
+        <div id="screen" class="flex outline container relative">
+            <div class="flex full absolute priority-1 center" style="background-color: rgba(0,0,0,0.8);" id="start-screen">
+                <button id="start" class="btn">start</button>
+            </div>
+            <div class="flex full absolute priority-1 center hidden" style="background-color: rgba(0,0,0,0.2);" id="pause-menu">
+                <button id="resume" class="btn">resume</button>
+                <button id="restart" class="btn">restart</button>
+                <button id="toggle-ai" class="btn">toggle ai</button>
+            </div>
+            <canvas class="flex one" id="game-canvas"></canvas>
+        </div>
+        <div id="controls" class="flex row outline container">
+            <button class="btn" onclick="game.input('jump')">jump</button>
+            <button class="btn" onclick="game.input('dash')">dash</button>
+            <button class="btn" onclick="game.input('back dash')">back dash</button>
+            <button class="btn" onclick="game.match.actors[1].set_state('attack')">attack</button>
+            <button class="btn" onclick="game.match.actors[1].set_state('block')">block</button>
+            <button class="btn" onclick="game.match.actors[1].set_state('special 1')">special 1</button>
+        </div>
+        <button id="pause" class="btn">pause</button>
+    </div>
+    
+    <script src="battle_engine.js"></script>
+    <script src="physics.js"></script>
+    <script src="player.js"></script>
+    <script src="match.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
