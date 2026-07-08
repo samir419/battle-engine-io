@@ -138,11 +138,14 @@ let match = {
     opponent_ai:function(game){
         let p2 = this.actors[2]
         let p1 = this.actors[1]
-        let states = ["jump","dash","back dash","attack","block","idle","special 1","special 2","ultimate"]
+        let states = ["jump","dash","back dash","attack","block","idle","special 1","special 2"]
         this.ai_routine += game.dt
 
         if(this.ai_routine>=1){
             p2.set_state(states[Math.floor(Math.random()*states.length)])
+            if(p2.meter>=60){
+                p2.handle_input("ultimate", game)
+            }
             this.ai_routine=0
         }
         
