@@ -35,13 +35,15 @@
             </div>
             <canvas class="flex one" id="game-canvas"></canvas>
         </div>
-        <div id="controls" class="flex row outline container">
+        <div id="controls" class="flex row outline container wrappable">
             <button class="btn" onclick="game.input('jump')">jump</button>
             <button class="btn" onclick="game.input('dash')">dash</button>
             <button class="btn" onclick="game.input('back dash')">back dash</button>
             <button class="btn" onclick="game.match.actors[1].set_state('attack')">attack</button>
             <button class="btn" onclick="game.match.actors[1].set_state('block')">block</button>
             <button class="btn" onclick="game.match.actors[1].set_state('special 1')">special 1</button>
+            <button class="btn" onclick="game.match.actors[1].set_state('special 2')">special 2</button>
+            <button class="btn" onclick="game.match.actors[1].handle_input('ultimate', game)">ultimate</button>
         </div>
         <button id="pause" class="btn">pause</button>
     </div>

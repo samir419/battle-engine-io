@@ -59,6 +59,13 @@ let player = {
     },
 
     handle_input:function(inp,game){
+        if(inp=="ultimate"){
+            if(this.meter>=60){
+                this.meter-=60
+                this.set_state(inp)
+            }
+            return
+        }
         this.set_state(inp)
     },
 

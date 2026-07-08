@@ -34,8 +34,8 @@ let sakura = {
                         self.temp.jump=false
                     }
                 }else{
-                    self.vx=600*self.direction
-                    self.vy=-800
+                    self.vx=400*self.direction
+                    self.vy=-600
                     self.is_grounded=false
                     self.temp.jump=true
                     self.image="jump.png"
@@ -99,7 +99,7 @@ let sakura = {
                 if(game.physics.aabb(this.hitbox,opponent,game)){
                     if (!["block","block stun","knockdown","hit","ko"].includes(opponent.state)){
                         self.meter+=10
-                        opponent.hit(6)
+                        opponent.hit(5)
                     }
                     if(opponent.state=="block"){
                         self.meter+=4
@@ -229,7 +229,106 @@ let sakura = {
                     self.state="idle"
                 }
             }
-        }
+        },
+        "special 2":{
+            frames:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            animation_frame:0,
+            anim_frame_count:0,
+            animations:[
+                {image:"special 2 0.png",duration:0.1},
+                {image:"special 2 1.png",duration:0.1},],
+            update:function(self,game){
+                if(this.frames==0){
+                    this.frames=1
+                    self.vx=400*self.direction
+                }
+                self.image=this.animations[this.animation_frame].image
+                this.anim_frame_count+=game.dt
+                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
+                    this.animation_frame=(this.animation_frame+1)%this.animations.length
+                    this.anim_frame_count=0
+                }
+                this.hitbox.x=self.x+50*self.direction
+                this.hitbox.y=self.y+20
+                this.hitbox.w=30
+                this.hitbox.h=30
+                this.frames-=game.dt
+                let opponent=game.match.get_opponent(self,game)
+                if(game.physics.aabb(this.hitbox,opponent,game)){
+                    if (!["block","block stun","knockdown","hit","ko"].includes(opponent.state)){
+                        self.meter+=10
+                        opponent.hit(5)
+                    }
+                    if(opponent.state=="block"){
+                        self.meter+=4
+                        opponent.block_stun(0.5)
+                    }
+                    
+                }
+                if(this.frames<=0){
+                    this.frames=0
+                    self.vx=0
+                    self.state="idle"
+                }
+            }
+        },
+         "ultimate":{
+            frames:0,
+            update:function(self,game){
+                if(this.frames==0){
+                    self.image="special.png"
+                    this.frames=1//1 second
+                    let fire_ball = {
+                        x:self.x+50*self.direction,
+                        y:self.y,
+                        w:70,
+                        h:70,
+                        direction:self.direction,
+                        frames:3,
+                        target:game.match.get_opponent(self,game),
+                        update:function(self,game){
+                            this.x+=this.direction*200*game.dt
+                            let opponent=this.target
+                            if(game.physics.aabb(this,opponent,game)){
+                                if (!["block","block stun","knockdown","hit","ko"].includes(opponent.state)){
+                                    opponent.hit(50)
+                                }
+                                if(opponent.state=="block"){
+                                    self.meter+=10
+                                    opponent.block_stun(1)
+                                }
+                                this.frames=0
+                                let index = self.objects.indexOf(this)
+                                if (index > -1) {
+                                    self.objects.splice(index, 1);
+                                }
+                            }
+                            this.frames-=game.dt
+                            if(this.frames<=0){
+                                this.frames=0
+                                let index = self.objects.indexOf(this)
+                                if (index > -1) {
+                                    self.objects.splice(index, 1);
+                                }
+                            }
+                        },
+                        render:function(self,game){
+                            let ctx = game.ctx
+                            let canvas = game.canvas
+                            ctx.strokeStyle="orange"
+                            ctx.strokeRect(this.x,this.y,this.w,this.h)
+                        }
+                    }
+                    self.objects.push(fire_ball)
+                }
+                this.frames-=game.dt
+                if(this.frames<=0){
+                    this.frames=0
+                    self.state="idle"
+                }
+            }
+        },
     }
 }
 

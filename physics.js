@@ -3,7 +3,7 @@ let physics = {
         // Gravity
         if (actor.y + actor.h < game.canvas.height) {
             actor.is_grounded=false
-            actor.vy += 20;
+            actor.vy += 2000*game.dt;
             if(actor.vy>=600){
                 actor.vy=600
             }

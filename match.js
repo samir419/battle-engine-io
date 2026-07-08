@@ -76,6 +76,12 @@ let match = {
             // Left boundary
             if (actor.x < 0) {
                 actor.vx += Math.abs(actor.vx); // eject back inside
+                if(actor.vx>=500){
+                    actor.vx=500
+                }
+                if(actor.vx==0){
+                    actor.x+=500*game.dt
+                }
                 // optional: bounce effect
                 // actor.vx = Math.abs(actor.vx);
                 return true
@@ -85,6 +91,12 @@ let match = {
             // Right boundary
             if (actor.x + actor.w > game.canvas.width) {
                 actor.vx -= Math.abs(actor.vx); // eject back inside
+                if(actor.vx<=-500){
+                    actor.vx=-500
+                }
+                if(actor.vx==0){
+                    actor.x-=500*game.dt
+                }
                 // optional: bounce effect
                 // actor.vx = -Math.abs(actor.vx);
                 return true
@@ -126,7 +138,7 @@ let match = {
     opponent_ai:function(game){
         let p2 = this.actors[2]
         let p1 = this.actors[1]
-        let states = ["jump","dash","back dash","attack","block","idle","special 1"]
+        let states = ["jump","dash","back dash","attack","block","idle","special 1","special 2","ultimate"]
         this.ai_routine += game.dt
 
         if(this.ai_routine>=1){
