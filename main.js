@@ -106,6 +106,7 @@ document.getElementById("resume").onclick=()=>{
 
 document.getElementById("restart").onclick=()=>{
     document.getElementById("pause-menu").style.display="none"
+    game.state="running"
     game.match.create_match([game.chars[0],game.chars[0]])
 }
 

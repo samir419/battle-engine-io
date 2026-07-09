@@ -105,6 +105,7 @@ let sakura = {
                     self.image="special.png"
                     this.frames=1//1 second
                     let fire_ball = {
+                        id:`fireball ${self.id}`,
                         x:self.x+50*self.direction,
                         y:self.y+20,
                         w:30,
@@ -140,7 +141,9 @@ let sakura = {
                             ctx.strokeRect(this.x,this.y,this.w,this.h)
                         }
                     }
-                    self.objects.push(fire_ball)
+                    if (!self.objects.some(obj => obj.id === fire_ball.id)) {
+                        self.objects.push(fire_ball);
+                    }
                 }
                 this.frames-=game.dt
                 if(this.frames<=0){

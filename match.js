@@ -17,7 +17,8 @@ let match = {
             this.actors[2].direction=1
         }
         this.handle_player_collision(game)
-        //this.handle_push_boundary_and_stage_scrolling(game)
+        this.handle_push_boundary_and_stage_scrolling(this.actors[0],this.actors[1],this.actors[2],game)
+         this.handle_push_boundary_and_stage_scrolling(this.actors[0],this.actors[2],this.actors[1],game)
         if(this.ai_enabled){
             this.opponent_ai(game)
         }
@@ -68,67 +69,23 @@ let match = {
         this.actors[1].handle_input(inp,game)
     },
 
-    handle_push_boundary_and_stage_scrolling:function(game){
-        let p1 = this.actors[1]
-        let p2 = this.actors[2]
-        let stage = this.actors[0]
-
-        let is_on_left_boundary=(actor)=>{
-            // Left boundary
-            if (actor.x < 0) {
-                actor.vx += Math.abs(actor.vx); // eject back inside
-                if(actor.vx>=500){
-                    actor.vx=500
-                }
-                if(actor.vx==0){
-                    actor.x+=500*game.dt
-                }
-                // optional: bounce effect
-                // actor.vx = Math.abs(actor.vx);
-                return true
+    handle_push_boundary_and_stage_scrolling:function(stage,p1,p2,game){
+        let actor = p1
+        //stay within boundaries
+        if(actor.x<0){
+            actor.x=0
+            if(stage.x<0&&p2.x+p2.w<game.canvas.width){
+                stage.x+=100*game.dt
+                p2.x+=100*game.dt
             }
         }
-        let is_on_right_boundary=(actor)=>{
-            // Right boundary
-            if (actor.x + actor.w > game.canvas.width) {
-                actor.vx -= Math.abs(actor.vx); // eject back inside
-                if(actor.vx<=-500){
-                    actor.vx=-500
-                }
-                if(actor.vx==0){
-                    actor.x-=500*game.dt
-                }
-                // optional: bounce effect
-                // actor.vx = -Math.abs(actor.vx);
-                return true
+        if(actor.x+actor.w>game.canvas.width){
+            actor.x=game.canvas.width-actor.w
+            if(stage.x+stage.width>game.canvas.width&&p2.x>0){
+                stage.x-=100*game.dt
+                p2.x-=100*game.dt
             }
         }
-
-        let stage_scroll = (actor1,actor2) => {
-           
-            let left = actor1.x < 0
-            let right = actor1.x + actor1.w > game.canvas.width
-            if (!left && !right) return // no need to scroll if actor is within boundaries
-
-            actor1.vx += left ? Math.abs(actor1.vx) : -Math.abs(actor1.vx)
-            let shift = actor1.vx * game.dt
-            if (actor1.vx === 0) {
-                shift = (left ? 1 : -1) * 500 * game.dt
-            }
-
-            if (left && stage.x < 0) {
-                stage.x += shift
-                actor2.x += shift
-            } else if (right && stage.x + stage.w > game.canvas.width) {
-                stage.x += shift
-                actor2.x += shift
-            }
-
-            actor1.x += shift
-           
-        }
-        stage_scroll(p1, p2)
-        stage_scroll(p2, p1)
     },
 
     handle_player_collision:function(game){

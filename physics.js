@@ -14,10 +14,6 @@ let physics = {
             actor.vy=0
             actor.is_grounded=true
         }
-        
-        //stay within boundaries
-        if(actor.x<0)actor.x=0
-        if(actor.x+actor.w>game.canvas.width)actor.x=game.canvas.width-actor.w
 
         //update position
         actor.x+=actor.vx*game.dt
