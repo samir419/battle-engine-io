@@ -12,6 +12,7 @@ let player = {
     state:"idle",
     state_buffer:"none",
     objects:[],
+    enable_physics:true,
     update:function(game){
         if(this.health<=0){
             this.state="ko"
@@ -21,7 +22,9 @@ let player = {
         if(this.meter>60){
             this.meter=60
         }
-       game.physics.apply_physics(this,game)
+        if(this.enable_physics){
+            game.physics.apply_physics(this,game)
+        }
        this.states[this.state].update(this,game)
        for(let i=0;i<this.objects.length;i++){
             let obj = this.objects[i]
@@ -46,10 +49,10 @@ let player = {
         if (actor.direction === -1) {
             ctx.translate(actor.x + actor.w, actor.y);
             ctx.scale(-1, 1);
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0+(this.states[this.state].offsetx?this.states[this.state].offsetx:0), 0+(this.states[this.state].offsety?this.states[this.state].offsety:0));
         } else {
             ctx.translate(actor.x, actor.y);
-            ctx.drawImage(img, 0, 0);
+            ctx.drawImage(img, 0+(this.states[this.state].offsetx?this.states[this.state].offsetx:0), 0+(this.states[this.state].offsety?this.states[this.state].offsety:0));
         }
         ctx.restore(); 
         for(let i=0;i<actor.objects.length;i++){
@@ -77,28 +80,116 @@ let player = {
         }
     },
 
-    hit:function(damage){
-        this.health-=damage
-        this.temp.received_damage=damage
-        if(damage>5){
-            this.knockdown()
-        }else{
-            this.meter+=5
-            this.state="hit"
+    hit:function(damage,attacker,game){
+        if (!["block","block stun","knockdown","hit","ko"].includes(this.state)){
+            this.health-=damage
+            this.temp.received_damage=damage
+            if(damage>5){
+                this.knockdown()
+            }else{
+                this.state="hit"
+            }
+            if(damage<=20){
+                this.meter+=damage-damage/4
+                attacker.meter+=damage
+            }
+            game.freeze_frame(0.2)
         }
-        
+        if(this.state=="block"){
+            if(damage<=20){
+                this.meter+=damage/2
+                attacker.meter+=damage/2
+            }
+            this.block_stun(0.5)
+        }
     },
 
     block_stun:function(time){
         this.state="block stun"
-        this.meter+=1
         this.temp.block_stun_time=time
     },
 
     knockdown:function(){
-        this.meter+=7
         this.state="knockdown"
     },
 
-    states:{}
+    states:{},
+
+    default_states:{
+        "idle":{
+            init:function(self,game){},
+            update:function(self,game){
+                if(self.state_buffer!="none"){
+                    let x = self.state_buffer
+                    self.state=x
+                    self.state_buffer="none"
+                }
+                self.image="idle.png"
+            }
+        },
+        "hit":{
+            frames:0,
+            update:function(self,game){
+                if(this.frames==0){
+                    self.image="hit.png"
+                    this.frames=0.2
+                    self.vx=100*-self.direction
+                }
+                this.frames-=game.dt
+                if(this.frames<=0){
+                    self.vx=0
+                    this.frames=0
+                    self.state="idle"
+                }
+            }
+        },
+        "block":{
+            update:function(self,game){
+                self.image="block.png"
+            }
+        },
+        "block stun":{
+            update:function(self,game){
+                self.temp.block_stun_time-=game.dt
+                self.image="block.png"
+                if(!game.match.check_boundary(self,game)){
+                    self.x+=-100*self.direction*game.dt
+                }
+                if(self.temp.block_stun_time<=0){
+                    self.temp.block_stun_time=0
+                    self.state="block"
+                }
+            }
+        },
+        "knockdown":{
+            frames:0,
+            offsetx:0,
+            offsety:0,
+            update:function(self,game){
+                if(this.frames==0){
+                    self.image="knockdown.png"
+                    this.frames=1
+                    self.vx=100*-self.direction
+                    self.vy=-400
+                    self.is_grounded=false
+                }
+                this.frames-=game.dt
+                if(this.frames<=0.5){
+                    self.vx=0
+                    self.vy=0
+                }
+                if(this.frames<=0){
+                    this.frames=0
+                    self.state="idle"
+                }
+            }
+        },
+        "ko":{
+            offsetx:0,
+            offsety:0,
+            update:function(self,game){
+                self.image="ko.png"
+            }
+        },
+    }
 }

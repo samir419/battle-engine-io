@@ -17,7 +17,7 @@ let match = {
             this.actors[2].direction=1
         }
         this.handle_player_collision(game)
-        this.handle_push_boundary_and_stage_scrolling(game)
+        //this.handle_push_boundary_and_stage_scrolling(game)
         if(this.ai_enabled){
             this.opponent_ai(game)
         }
@@ -33,7 +33,7 @@ let match = {
         p1.color="blue"
         p1.path = `chars/${chars[0].name}/sprites/`
         p1.direction=1
-        p1.states=chars[0].states
+        p1.states={...p1.default_states,...chars[0].states}
         p1.id=1
 
         let p2 = {...player}
@@ -44,7 +44,7 @@ let match = {
         p2.color="red"
         p2.path = `chars/${chars[1].name}/sprites/`
         p2.direction=-1
-        p2.states=chars[1].states
+        p2.states={...p2.default_states,...chars[1].states}
         p2.id=2
 
         let stage = {
@@ -61,6 +61,7 @@ let match = {
         }
         this.actors = [stage,p1,p2]
         this.state="running"
+        console.log(this.actors)
     },
 
     handle_input:function(inp,game){
@@ -138,7 +139,7 @@ let match = {
     opponent_ai:function(game){
         let p2 = this.actors[2]
         let p1 = this.actors[1]
-        let states = ["jump","dash","back dash","attack","block","idle","special 1","special 2"]
+        let states = ["jump","dash","back dash","attack","block","idle","special 1","special 2","special 3"]
         this.ai_routine += game.dt
 
         if(this.ai_routine>=1){
@@ -159,4 +160,14 @@ let match = {
             }
         }
     },
+
+    check_boundary:function(actor,game){
+        if(actor.x<=0){
+            return true
+        }
+        if(actor.x+actor.w>=game.canvas.width){
+            return true
+        }
+       return false
+    }
 }

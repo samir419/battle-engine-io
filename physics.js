@@ -14,6 +14,12 @@ let physics = {
             actor.vy=0
             actor.is_grounded=true
         }
+        
+        //stay within boundaries
+        if(actor.x<0)actor.x=0
+        if(actor.x+actor.w>game.canvas.width)actor.x=game.canvas.width-actor.w
+
+        //update position
         actor.x+=actor.vx*game.dt
         actor.y+=actor.vy*game.dt
     },
@@ -21,14 +27,22 @@ let physics = {
     collide_and_eject:function(actor1,actor2,game){
         let a1 = actor1
         let a2 = actor2
-        if(this.aabb(a1,a2,game)){
+        /*if(this.aabb(a1,a2,game)){
             a1.x+=(a1.vx-100)*game.dt*-a1.direction
             a2.x+=a1.vx*game.dt*-a2.direction
             if(a1.vx==0){
                 a1.x-=200*game.dt*-a1.direction
                 a2.x+=500*game.dt*-a2.direction
             }
-        }
+        }*/
+       if(a1.x+a1.w>a2.x&&a1.x+a1.w<a2.x+a2.w){
+            a1.x-=500*game.dt
+            a2.x+=a1.vx*game.dt
+       }
+       if(a1.x>a2.x&&a1.x<a2.x+a2.w){
+            a1.x+=500*game.dt
+            a2.x+=a1.vx*game.dt
+       }
         
     },
 

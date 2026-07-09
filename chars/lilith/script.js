@@ -1,22 +1,16 @@
-let sakura = {
-    name: "sakura",
-    width: 76,
-    height: 87,
+let lilith = {
+    name: "lilith",
+    width: 62,
+    height: 97,
     states:{
-        
         "jump":{
             update:function(self,game){
                 if(self.temp.jump){
-                    let opponent
-                    /*for(let i=0;i<game.match.actors.length;i++){
-                        if(game.match.actors[i].id!=self.id && game.match.actors[i].id!=undefined){
-                            opponent=game.match.actors[i]
-                        }
-                    }
+                    let opponent = game.match.get_opponent(self,game)
                     let distance=Math.abs(opponent.x-self.x)
                     if(distance<150){
-                        self.set_state("attack")    
-                    }*/
+                        self.state="jump attack"
+                    }
                     if(self.is_grounded==true){
                         self.state="idle"
                         self.vx=0
@@ -35,14 +29,19 @@ let sakura = {
         },
         "dash":{
             dash_counter:0,
-            available_states:["jump"],
+            target:null,
             update:function(self,game){
                 if(this.dash_counter==0){
                     self.vx=600*self.direction
                     this.dash_counter=0.25//0.25 seconds
                     self.image="dash.png"
+                    this.target=game.match.get_opponent(self,game)
                 }
                 this.dash_counter-=game.dt
+                let distance=Math.abs(this.target.x-self.x)
+                if(distance<150){
+                    self.state="attack"
+                }
                 if(this.dash_counter<=0){
                     this.dash_counter=0
                     self.state="idle"
@@ -74,16 +73,13 @@ let sakura = {
             hitbox:{x:0,y:0,w:0,h:0},
             update:function(self,game){
                 if(this.frames==0){
-                    if(self.is_grounded==true){
-                        self.vx=0
-                    }
                     self.image="attack.png"
-                    this.frames=0.5//0.5 seconds
+                    this.frames=0.2//0.5 seconds
                 }
-                this.hitbox.x=self.x+50*self.direction
-                this.hitbox.y=self.y+20
-                this.hitbox.w=30
-                this.hitbox.h=30
+                this.hitbox.x=self.x+self.w*self.direction
+                this.hitbox.y=self.y
+                this.hitbox.w=self.w
+                this.hitbox.h=self.h
                 this.frames-=game.dt
                 let opponent=game.match.get_opponent(self,game)
                 if(game.physics.aabb(this.hitbox,opponent,game)){
@@ -97,24 +93,23 @@ let sakura = {
                 }
             }
         },
-       
         "special 1":{
             frames:0,
             update:function(self,game){
                 if(this.frames==0){
-                    self.image="special.png"
-                    this.frames=1//1 second
+                    self.image="special1.png"
+                    this.frames=0.5//0.5 seconds
                     let fire_ball = {
                         x:self.x+50*self.direction,
-                        y:self.y+20,
+                        y:self.y,
                         w:30,
                         h:30,
                         direction:self.direction,
-                        frames:2,
+                        frames:4,
                         user:self,
                         target:game.match.get_opponent(self,game),
                         update:function(self,game){
-                            this.x+=this.direction*200*game.dt
+                            this.x+=this.direction*70*game.dt
                             let opponent=this.target
                             if(game.physics.aabb(this,opponent,game)){
                                 opponent.hit(10,this.user,game)
@@ -136,7 +131,7 @@ let sakura = {
                         render:function(self,game){
                             let ctx = game.ctx
                             let canvas = game.canvas
-                            ctx.strokeStyle="orange"
+                            ctx.strokeStyle="green"
                             ctx.strokeRect(this.x,this.y,this.w,this.h)
                         }
                     }
@@ -155,8 +150,8 @@ let sakura = {
             animation_frame:0,
             anim_frame_count:0,
             animations:[
-                {image:"special 2 0.png",duration:0.1},
-                {image:"special 2 1.png",duration:0.1},],
+                {image:"special20.png",duration:0.1},
+                {image:"special21.png",duration:0.1},],
             update:function(self,game){
                 if(this.frames==0){
                     this.frames=1
@@ -168,14 +163,14 @@ let sakura = {
                     this.animation_frame=(this.animation_frame+1)%this.animations.length
                     this.anim_frame_count=0
                 }
-                this.hitbox.x=self.x+50*self.direction
-                this.hitbox.y=self.y+20
-                this.hitbox.w=30
-                this.hitbox.h=30
+                this.hitbox.w = self.w * 2;
+                this.hitbox.h = self.h / 4;
+                this.hitbox.x = self.x + (self.w - this.hitbox.w) / 2;
+                this.hitbox.y = self.y + (self.h - this.hitbox.h) / 2;
                 this.frames-=game.dt
                 let opponent=game.match.get_opponent(self,game)
                 if(game.physics.aabb(this.hitbox,opponent,game)){
-                    opponent.hit(5,self,game)
+                   opponent.hit(5,self,game)
                 }
                 if(this.frames<=0){
                     this.frames=0
@@ -189,14 +184,19 @@ let sakura = {
             hitbox:{x:0,y:0,w:0,h:0},
             update:function(self,game){
                 if(this.frames==0){
-                    this.frames=1
+                    if(self.is_grounded==false){
+                        self.state="idle"
+                        return
+                    }
+                    this.frames=0.75
                     self.image="special3.png"
-                    self.vy=-600
+                    self.vy=-800
+                    self.vx=100*self.direction
                     self.is_grounded=false
                 }
                 this.hitbox.x=self.x+20*self.direction
                 this.hitbox.y=self.y-20
-                this.hitbox.w=50
+                this.hitbox.w=100
                 this.hitbox.h=50
                 this.frames-=game.dt
                 let opponent=game.match.get_opponent(self,game)
@@ -205,55 +205,72 @@ let sakura = {
                 }
                 if(this.frames<=0){
                     this.frames=0
+                    self.vx=0
                     self.state="idle"
                 }
             }
         },
          "ultimate":{
-            frames:0,
+             frames:0,
+            hitbox:{x:0,y:0,w:0,h:0},
             update:function(self,game){
                 if(this.frames==0){
-                    self.image="special.png"
-                    this.frames=1//1 second
-                    let fire_ball = {
-                        x:self.x+50*self.direction,
-                        y:self.y,
-                        w:70,
-                        h:70,
-                        direction:self.direction,
-                        frames:3,
-                        target:game.match.get_opponent(self,game),
-                        update:function(self,game){
-                            this.x+=this.direction*200*game.dt
-                            let opponent=this.target
-                            if(game.physics.aabb(this,opponent,game)){
-                                opponent.hit(50,self,game)
-                                this.frames=0
-                                let index = self.objects.indexOf(this)
-                                if (index > -1) {
-                                    self.objects.splice(index, 1);
-                                }
-                            }
-                            this.frames-=game.dt
-                            if(this.frames<=0){
-                                this.frames=0
-                                let index = self.objects.indexOf(this)
-                                if (index > -1) {
-                                    self.objects.splice(index, 1);
-                                }
-                            }
-                        },
-                        render:function(self,game){
-                            let ctx = game.ctx
-                            let canvas = game.canvas
-                            ctx.strokeStyle="orange"
-                            ctx.strokeRect(this.x,this.y,this.w,this.h)
-                        }
-                    }
-                    self.objects.push(fire_ball)
+                    this.frames=1
+                    self.image="ultimate.png"
+                    self.enable_physics=false
                 }
+                this.hitbox.x=self.x-50
+                this.hitbox.y=self.y-50
+                this.hitbox.w=self.w+100
+                this.hitbox.h=self.h+100
                 this.frames-=game.dt
+                self.x+=self.direction*200*game.dt
+                self.y-=200*game.dt
+                self.is_grounded=false
+                let opponent=game.match.get_opponent(self,game)
+                if(game.physics.aabb(this.hitbox,opponent,game)){
+                    opponent.hit(30,self,game)
+                }
                 if(this.frames<=0){
+                    this.frames=0
+                    self.vx=0
+                    self.state="idle"
+                    self.enable_physics=true
+                }
+            }
+        },
+        "jump attack":{
+            frames:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            animation_frame:0,
+            anim_frame_count:0,
+            animations:[
+                {image:"jumpattack0.png",duration:0.1},
+                {image:"jumpattack1.png",duration:0.1},
+                {image:"jumpattack2.png",duration:0.1}
+            ],
+            update:function(self,game){
+                if(this.frames==0){
+                    this.frames=0.4
+                }
+                self.image=this.animations[this.animation_frame].image
+                this.anim_frame_count+=game.dt
+                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
+                    this.animation_frame=(this.animation_frame+1)%this.animations.length
+                    this.anim_frame_count=0
+                }
+                this.hitbox.x=self.x-20
+                this.hitbox.y=self.y
+                this.hitbox.w=self.w+40
+                this.hitbox.h=self.h/2
+                this.frames-=game.dt
+                let opponent=game.match.get_opponent(self,game)
+                if(game.physics.aabb(this.hitbox,opponent,game)){
+                    opponent.hit(5,self,game)
+                }
+                if(this.frames<=0||self.is_grounded==true){
+                    self.vx=0
+                    self.vy=0
                     this.frames=0
                     self.state="idle"
                 }
@@ -262,4 +279,4 @@ let sakura = {
     }
 }
 
-game.chars.push(sakura)
+game.chars.push(lilith)
