@@ -20,27 +20,32 @@ let physics = {
         actor.y+=actor.vy*game.dt
     },
 
-    collide_and_eject:function(actor1,actor2,game){
-        let a1 = actor1
-        let a2 = actor2
-        /*if(this.aabb(a1,a2,game)){
-            a1.x+=(a1.vx-100)*game.dt*-a1.direction
-            a2.x+=a1.vx*game.dt*-a2.direction
-            if(a1.vx==0){
-                a1.x-=200*game.dt*-a1.direction
-                a2.x+=500*game.dt*-a2.direction
-            }
-        }*/
-       if(a1.x+a1.w>a2.x&&a1.x+a1.w<a2.x+a2.w){
-            a1.x-=500*game.dt
-            a2.x+=a1.vx*game.dt
-       }
-       if(a1.x>a2.x&&a1.x<a2.x+a2.w){
-            a1.x+=500*game.dt
-            a2.x+=a1.vx*game.dt
-       }
-        
-    },
+collide_and_eject:function(actor1, actor2, game) {
+    try {
+        let a1 = actor1;
+        let a2 = actor2;
+
+        if (!a1 || !a2) {
+            console.error('Error: Invalid actors for collision detection');
+            return false;
+        }
+
+        if (a1.x + a1.w > a2.x && a1.x < a2.x + a2.w) {
+            a1.x -= 500 * game.dt;
+            a2.x += a1.vx * game.dt;
+        }
+
+        if (a1.x > a2.x && a1.x < a2.x + a2.w) {
+            a1.x += 500 * game.dt;
+            a2.x += a1.vx * game.dt;
+        }
+
+        return true;
+    } catch (error) {
+        console.error('Error during collision detection:', error);
+        return false;
+    }
+},
 
     aabb:function(actor1,actor2,game){
         // simple AABB overlap test
