@@ -14,7 +14,7 @@
 			max-width:1080px;
 		}
 		.btn{
-			padding:10px;
+			padding:15px;
 			margin:5px;
 			width: fit-content;
 			height:fit-content;
@@ -24,11 +24,17 @@
 </head>
 <body>
     <div id="main" class="flex full row center">
-        <div id="controls-left" class="flex row outline one wrappable">
-            <button class="btn" onclick="game.input('jump')">jump</button>
-            <button class="btn" onclick="game.input('dash')">dash</button>
-            <button class="btn" onclick="game.input('back dash')">back dash</button>
-            <button class="btn" onclick="game.match.actors[1].set_state('block')">block</button>
+        <div id="controls-left" class="flex column center one">
+            <div class="flex one center">
+                <button class="btn" onclick="game.input('jump')">jump</button>
+            </div>
+            <div class="flex one center row">
+                <button class="btn" onclick="game.input('dash')">dash</button>
+                <button class="btn" onclick="game.input('back dash')">back dash</button>
+            </div>
+            <div class="flex one center">
+                <button class="btn" onclick="game.match.actors[1].set_state('block')">block</button>
+            </div>
         </div>
         <div id="screen" class="flex outline two relative">
             <div class="flex full absolute priority-1 center" style="background-color: rgba(0,0,0,0.8);" id="start-screen">
@@ -45,6 +51,7 @@
             <button class="btn" onclick="game.match.actors[1].set_state('attack')">attack</button>
             <button class="btn" onclick="game.match.actors[1].set_state('special 1')">special 1</button>
             <button class="btn" onclick="game.match.actors[1].set_state('special 2')">special 2</button>
+            <button class="btn" onclick="game.match.actors[1].set_state('special 3')">special 3</button>
             <button class="btn" onclick="game.match.actors[1].handle_input('ultimate', game)">ultimate</button>
         </div>
         
