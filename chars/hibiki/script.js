@@ -1,0 +1,233 @@
+let hibiki = {
+    name: "hibiki",
+    width: 66,
+    height: 90,
+    states:{
+        
+       "jump":{
+            update:function(self,game){
+                if(self.temp.jump){
+                    let opponent = game.match.get_opponent(self,game)
+                    let distance=Math.abs(opponent.x-self.x)
+                    if(distance<50){
+                        self.state="jump attack"
+                        self.temp.jump=false
+                    }
+                    if(self.state_buffer!="none"){
+                        let x = self.state_buffer
+                        self.state=x
+                        self.state_buffer="none"
+                        self.temp.jump=false
+                        return
+                    }
+                    if(self.is_grounded==true){
+                        self.state="idle"
+                        self.vx=0
+                        self.vy=0
+                        self.temp.jump=false
+                    }
+                }else{
+                    if(!self.is_grounded)return
+                    self.vx=100*self.direction
+                    self.vy=-800
+                    self.is_grounded=false
+                    self.temp.jump=true
+                    self.image="jump.png"
+                }
+                
+            }
+        },
+        "dash":{
+            dash_counter:0,
+            target:null,
+            animation_frame:0,
+            anim_frame_count:0,
+            animations:[
+                {image:"dash0.png",duration:0.1},
+                {image:"dash1.png",duration:0.1},
+                {image:"dash2.png",duration:0.1},
+                {image:"dash3.png",duration:0.1},
+                {image:"dash4.png",duration:0.1},
+                {image:"dash5.png",duration:0.1},
+                {image:"dash6.png",duration:0.1},
+                {image:"dash7.png",duration:0.1},
+            ],
+            update:function(self,game){
+                if(this.dash_counter==0){
+                    self.vx=300*self.direction
+                    this.dash_counter=2//0.25 seconds
+                    self.image="dash.png"
+                    this.target=game.match.get_opponent(self,game)
+                }
+                self.image=this.animations[this.animation_frame].image
+                this.anim_frame_count+=game.dt
+                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
+                    this.animation_frame=(this.animation_frame+1)%this.animations.length
+                    this.anim_frame_count=0
+                }
+                this.dash_counter-=game.dt
+                if(self.state_buffer!="none"){
+                    let x = self.state_buffer
+                    self.state=x
+                    self.state_buffer="none"
+                    this.dash_counter=0
+                    return
+                }
+                let distance=Math.abs(this.target.x-self.x)
+                if(distance<90){
+                    self.state="attack"
+                    this.dash_counter=0
+                    return
+                }
+                if(this.dash_counter<=0){
+                    this.dash_counter=0
+                    self.state="idle"
+                    self.vx=0
+                }
+                
+            }
+        },
+        "back dash":{
+            dash_counter:0,
+            update:function(self,game){
+                if(this.dash_counter==0){
+                    self.vx=300*-self.direction
+                    if(self.is_grounded==true){
+                     self.vy=-400
+                     self.is_grounded=false
+                    }
+                    this.dash_counter=0.25//0.25 seconds
+                    self.image="backdash.png"
+                }
+                this.dash_counter-=game.dt
+                if(this.dash_counter<=0){
+                    this.dash_counter=0
+                    self.state="idle"
+                    self.vx=0
+                }
+                
+            }
+        },
+        "attack":{
+            frames:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            update:function(self,game){
+                if(this.frames==0){
+                    if(self.is_grounded==true){
+                        self.vx=0
+                    }
+                    self.image="attack.png"
+                    this.frames=0.1//0.1 seconds
+                }
+                this.hitbox.x=self.x+self.w*self.direction
+                this.hitbox.y=self.y
+                this.hitbox.w=self.w
+                this.hitbox.h=self.h
+                this.frames-=game.dt
+                let opponent=game.match.get_opponent(self,game)
+                if(game.physics.aabb(this.hitbox,opponent,game)){
+                    opponent.hit(5,self,game)
+                }
+                if(this.frames<=0){
+                    self.vx=0
+                    self.vy=0
+                    this.frames=0
+                    self.state="idle"
+                }
+            }
+        },
+       
+        "special 1":{
+            frames:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            offsetx:0,
+            offsety:-55,
+            update:function(self,game){
+                if(this.frames==0){
+                    if(self.is_grounded==true){
+                        self.vx=0
+                    }
+                    self.image="special1.png"
+                    this.frames=0.3
+                }
+                this.hitbox.x=self.x+self.w*self.direction
+                this.hitbox.y=self.y-33
+                this.hitbox.w=100
+                this.hitbox.h=self.h
+                this.frames-=game.dt
+                let opponent=game.match.get_opponent(self,game)
+                if(game.physics.aabb(this.hitbox,opponent,game)){
+                    opponent.hit(10,self,game)
+                }
+                if(this.frames<=0){
+                    self.vx=0
+                    self.vy=0
+                    this.frames=0
+                    self.state="idle"
+                }
+            }
+        },
+        "special 2":{
+            frames:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            update:function(self,game){
+                if(this.frames==0){
+                    this.frames=0.4
+                    self.vx=400*self.direction
+                    self.image="special2.png"
+                }
+                this.hitbox.x=self.x+self.w*self.direction
+                this.hitbox.y=self.y+self.h/4
+                this.hitbox.w=66
+                this.hitbox.h=self.h/2
+                this.frames-=game.dt
+                let opponent=game.match.get_opponent(self,game)
+                if(game.physics.aabb(this.hitbox,opponent,game)){
+                    opponent.hit(5,self,game)
+                }
+                if(this.frames<=0||(self.frames>0&&self.is_grounded==true)){
+                    this.frames=0
+                    self.vx=0
+                    self.state="idle"
+                }
+            }
+        },
+        "special 3":{
+            frames:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            damage:5,
+            update:function(self,game){self.state="idle"}
+        },
+        "ultimate":{
+            frames:0,
+            update:function(self,game){self.state="idle"}
+        },
+        "jump attack":{
+            frames:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            update:function(self,game){
+                if(this.frames==0){
+                    self.image="jumpattack.png"
+                    this.frames=0.4
+                }
+                this.hitbox.x=self.x+20*self.direction
+                this.hitbox.y=self.y+self.h
+                this.hitbox.w=30
+                this.hitbox.h=self.h/4
+                this.frames-=game.dt
+                let opponent=game.match.get_opponent(self,game)
+                if(game.physics.aabb(this.hitbox,opponent,game)){
+                    opponent.hit(5,self,game)
+                }
+                if(this.frames<=0||self.is_grounded==true){
+                    self.vx=0
+                    self.vy=0
+                    this.frames=0
+                    self.state="idle"
+                }
+            }
+        }
+    }
+}
+
+game.chars.push(hibiki)

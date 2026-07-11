@@ -31,11 +31,11 @@ let physics = {
                 a2.x+=500*game.dt*-a2.direction
             }
         }*/
-       if(a1.x+a1.w>a2.x&&a1.x+a1.w<a2.x+a2.w){
+       if(a1.x+a1.w>a2.x&&a1.x+a1.w<a2.x+a2.w&&a1.y+a1.h>a2.y){
             a1.x-=500*game.dt
             a2.x+=a1.vx*game.dt
        }
-       if(a1.x>a2.x&&a1.x<a2.x+a2.w){
+       if(a1.x>a2.x&&a1.x<a2.x+a2.w&&a1.y+a1.h>a2.y){
             a1.x+=500*game.dt
             a2.x+=a1.vx*game.dt
        }

@@ -7,7 +7,8 @@ game.canvas.height = 224
 game.lastTime = 0;
 game.char_paths=[
     "chars/sakura",
-    "chars/lilith"
+    "chars/lilith",
+    "chars/hibiki"
 ]
 game.chars=[]
 for(let i=0;i<game.char_paths.length;i++){
@@ -91,7 +92,32 @@ game.init()
 
 document.getElementById("start").onclick=()=>{
     document.getElementById("start-screen").style.display="none"
-    game.match.create_match([game.chars[1],game.chars[0]])
+    document.getElementById("character-select").style.display="flex"
+    let selectnum=1
+    let p1
+    let p2
+    function char_select(){
+        document.getElementById("char-renders").innerHTML=""
+        document.getElementById("chrlog").textContent=`player ${selectnum} select--`
+        for(let i=0;i<game.chars.length;i++){
+            let btn = document.createElement("button")
+            btn.classList="btn"
+            btn.textContent=game.chars[i].name
+            btn.onclick=()=>{
+                if(selectnum==1){
+                    p1 = game.chars[i]
+                    selectnum++
+                    char_select()
+                }else{
+                    p2 = game.chars[i]
+                    document.getElementById("character-select").style.display="none"
+                    game.match.create_match([p1,p2])
+                }
+            }
+            document.getElementById("char-renders").append(btn)
+        }
+    }
+    char_select()
 }
 
 document.getElementById("pause").onclick=()=>{
@@ -106,10 +132,80 @@ document.getElementById("resume").onclick=()=>{
 
 document.getElementById("restart").onclick=()=>{
     document.getElementById("pause-menu").style.display="none"
-    game.state="running"
-    game.match.create_match([game.chars[0],game.chars[0]])
+    document.getElementById("character-select").style.display="flex"
+    let selectnum=1
+    let p1
+    let p2
+    function char_select(){
+        document.getElementById("char-renders").innerHTML=""
+        document.getElementById("chrlog").textContent=`player ${selectnum} select--`
+        for(let i=0;i<game.chars.length;i++){
+            let btn = document.createElement("button")
+            btn.classList="btn"
+            btn.textContent=game.chars[i].name
+            btn.onclick=()=>{
+                if(selectnum==1){
+                    p1 = game.chars[i]
+                    selectnum++
+                    char_select()
+                }else{
+                    p2 = game.chars[i]
+                    document.getElementById("character-select").style.display="none"
+                    game.state="running"
+                    game.match.create_match([p1,p2])
+                }
+            }
+            document.getElementById("char-renders").append(btn)
+        }
+    }
+    char_select()
 }
 
 document.getElementById("toggle-ai").onclick=()=>{
     game.match.ai_enabled=!game.match.ai_enabled
 }
+
+function handleKey(e){
+    switch(e.key){
+        case "w":
+            game.input('jump')
+            break;
+        case "s":
+            game.match.actors[1].set_state('block')
+            break;
+        case "d":
+            if(game.match.actors[1].direction==1){
+                game.input('dash')
+            }else{
+                game.input('back dash')
+            }
+            break;
+        case "a":
+            if(game.match.actors[1].direction==1){
+                game.input('back dash')
+            }else{
+                game.input('dash')
+            }
+            break;
+        case "j":
+            game.match.actors[1].set_state('attack')
+            break;
+        case "k":
+            game.match.actors[1].set_state('special 1')
+            break;
+        case "l":
+            game.match.actors[1].set_state('special 2')
+            break;
+        case "i":
+            game.match.actors[1].set_state('special 3')
+            break;
+        case "o":
+            game.match.actors[1].handle_input('ultimate', game)
+            break;
+        case "p":
+            game.match.actors[1].set_state('throw')
+            break;
+    }
+}
+
+document.addEventListener("keydown", handleKey);

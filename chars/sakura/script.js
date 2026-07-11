@@ -24,8 +24,8 @@ let sakura = {
                         self.temp.jump=false
                     }
                 }else{
-                    self.vx=400*self.direction
-                    self.vy=-600
+                    self.vx=300*self.direction
+                    self.vy=-700
                     self.is_grounded=false
                     self.temp.jump=true
                     self.image="jump.png"
@@ -35,14 +35,28 @@ let sakura = {
         },
         "dash":{
             dash_counter:0,
-            available_states:["jump"],
+            target:null,
             update:function(self,game){
                 if(this.dash_counter==0){
-                    self.vx=600*self.direction
-                    this.dash_counter=0.25//0.25 seconds
+                    self.vx=300*self.direction
+                    this.dash_counter=2//0.25 seconds
                     self.image="dash.png"
+                    this.target=game.match.get_opponent(self,game)
                 }
                 this.dash_counter-=game.dt
+                if(self.state_buffer!="none"){
+                    let x = self.state_buffer
+                    self.state=x
+                    self.state_buffer="none"
+                    this.dash_counter=0
+                    return
+                }
+                let distance=Math.abs(this.target.x-self.x)
+                if(distance<90){
+                    self.state="attack"
+                    this.dash_counter=0
+                    return
+                }
                 if(this.dash_counter<=0){
                     this.dash_counter=0
                     self.state="idle"
@@ -56,7 +70,7 @@ let sakura = {
             available_states:["jump"],
             update:function(self,game){
                 if(this.dash_counter==0){
-                    self.vx=600*-self.direction
+                    self.vx=300*-self.direction
                     this.dash_counter=0.25//0.25 seconds
                     self.image="back dash.png"
                 }
@@ -78,12 +92,12 @@ let sakura = {
                         self.vx=0
                     }
                     self.image="attack.png"
-                    this.frames=0.5//0.5 seconds
+                    this.frames=0.1//0.1 seconds
                 }
                 this.hitbox.x=self.x+50*self.direction
                 this.hitbox.y=self.y+20
-                this.hitbox.w=30
-                this.hitbox.h=30
+                this.hitbox.w=50
+                this.hitbox.h=50
                 this.frames-=game.dt
                 let opponent=game.match.get_opponent(self,game)
                 if(game.physics.aabb(this.hitbox,opponent,game)){
@@ -111,11 +125,11 @@ let sakura = {
                         w:30,
                         h:30,
                         direction:self.direction,
-                        frames:2,
+                        frames:3,
                         user:self,
                         target:game.match.get_opponent(self,game),
                         update:function(self,game){
-                            this.x+=this.direction*200*game.dt
+                            this.x+=this.direction*100*game.dt
                             let opponent=this.target
                             if(game.physics.aabb(this,opponent,game)){
                                 opponent.hit(10,this.user,game)
@@ -162,8 +176,10 @@ let sakura = {
                 {image:"special 2 1.png",duration:0.1},],
             update:function(self,game){
                 if(this.frames==0){
-                    this.frames=1
-                    self.vx=400*self.direction
+                    this.frames=0.5
+                    self.vx=250*self.direction
+                    self.vy=-400
+                    self.is_grounded=false
                 }
                 self.image=this.animations[this.animation_frame].image
                 this.anim_frame_count+=game.dt
@@ -171,16 +187,16 @@ let sakura = {
                     this.animation_frame=(this.animation_frame+1)%this.animations.length
                     this.anim_frame_count=0
                 }
-                this.hitbox.x=self.x+50*self.direction
+                this.hitbox.x=self.x-20
                 this.hitbox.y=self.y+20
-                this.hitbox.w=30
-                this.hitbox.h=30
+                this.hitbox.w=self.w+40
+                this.hitbox.h=50
                 this.frames-=game.dt
                 let opponent=game.match.get_opponent(self,game)
                 if(game.physics.aabb(this.hitbox,opponent,game)){
                     opponent.hit(5,self,game)
                 }
-                if(this.frames<=0){
+                if(this.frames<=0||(self.frames>0&&self.is_grounded==true)){
                     this.frames=0
                     self.vx=0
                     self.state="idle"
@@ -190,23 +206,30 @@ let sakura = {
         "special 3":{
             frames:0,
             hitbox:{x:0,y:0,w:0,h:0},
+            damage:5,
             update:function(self,game){
                 if(this.frames==0){
                     this.frames=1
+                    self.image="dash.png"
+                    self.vx=200*self.direction
+                }
+                if(this.frames>0.5&&this.frames<0.6){
                     self.image="special3.png"
                     self.vy=-600
                     self.is_grounded=false
+                    this.damage=15
                 }
-                this.hitbox.x=self.x+20*self.direction
+                this.hitbox.x=self.x+50*self.direction
                 this.hitbox.y=self.y-20
                 this.hitbox.w=50
                 this.hitbox.h=50
                 this.frames-=game.dt
                 let opponent=game.match.get_opponent(self,game)
                 if(game.physics.aabb(this.hitbox,opponent,game)){
-                    opponent.hit(15,self,game)
+                    opponent.hit(this.damage,self,game)
                 }
                 if(this.frames<=0){
+                    self.vx=0
                     this.frames=0
                     self.state="idle"
                 }

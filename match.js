@@ -62,7 +62,6 @@ let match = {
         }
         this.actors = [stage,p1,p2]
         this.state="running"
-        console.log(this.actors)
     },
 
     handle_input:function(inp,game){
@@ -96,7 +95,7 @@ let match = {
     opponent_ai:function(game){
         let p2 = this.actors[2]
         let p1 = this.actors[1]
-        let states = ["jump","dash","back dash","attack","block","idle","special 1","special 2","special 3"]
+        let states = ["jump","dash","back dash","attack","block","idle","special 1","special 2","special 3","throw"]
         this.ai_routine += game.dt
 
         if(this.ai_routine>=1){

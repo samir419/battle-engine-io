@@ -45,6 +45,10 @@
             <div class="flex full absolute priority-1 center" style="background-color: rgba(0,0,0,0.8);" id="start-screen">
                 <button id="start" class="btn">start</button>
             </div>
+             <div class="flex full column absolute priority-1 hidden" style="background-color: rgba(0,0,0,0.4);" id="character-select">
+                <h1 id="chrlog">character select</h1>
+                <div id="char-renders" class="flex row wrappable"></div>
+            </div>
             <div class="flex full absolute priority-1 center hidden" style="background-color: rgba(0,0,0,0.2);" id="pause-menu">
                 <button id="resume" class="btn">resume</button>
                 <button id="restart" class="btn">restart</button>
@@ -54,6 +58,7 @@
         </div>
         <div id="controls-right" class="flex column center one">
             <div class="flex one center full-width">
+                 <button class="ctrl" onclick="game.match.actors[1].set_state('throw')">throw</button>
                 <button class="ctrl" onclick="game.match.actors[1].handle_input('ultimate', game)">ultimate</button>
             </div>
             <div class="flex one center full-width row">

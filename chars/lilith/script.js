@@ -10,6 +10,7 @@ let lilith = {
                     let distance=Math.abs(opponent.x-self.x)
                     if(distance<150){
                         self.state="jump attack"
+                        self.temp.jump=false
                     }
                     if(self.is_grounded==true){
                         self.state="idle"
@@ -18,7 +19,8 @@ let lilith = {
                         self.temp.jump=false
                     }
                 }else{
-                    self.vx=400*self.direction
+                    if(!self.is_grounded)return
+                    self.vx=300*self.direction
                     self.vy=-600
                     self.is_grounded=false
                     self.temp.jump=true
@@ -32,15 +34,17 @@ let lilith = {
             target:null,
             update:function(self,game){
                 if(this.dash_counter==0){
-                    self.vx=600*self.direction
+                    self.vx=300*self.direction
                     this.dash_counter=0.25//0.25 seconds
                     self.image="dash.png"
                     this.target=game.match.get_opponent(self,game)
                 }
                 this.dash_counter-=game.dt
                 let distance=Math.abs(this.target.x-self.x)
-                if(distance<150){
+                if(distance<90){
                     self.state="attack"
+                    this.dash_counter=0
+                    return
                 }
                 if(this.dash_counter<=0){
                     this.dash_counter=0
@@ -55,7 +59,7 @@ let lilith = {
             available_states:["jump"],
             update:function(self,game){
                 if(this.dash_counter==0){
-                    self.vx=600*-self.direction
+                    self.vx=300*-self.direction
                     this.dash_counter=0.25//0.25 seconds
                     self.image="back dash.png"
                 }
@@ -157,8 +161,8 @@ let lilith = {
                 {image:"special21.png",duration:0.1},],
             update:function(self,game){
                 if(this.frames==0){
-                    this.frames=1
-                    self.vx=400*self.direction
+                    this.frames=0.5
+                    self.vx=200*self.direction
                 }
                 self.image=this.animations[this.animation_frame].image
                 this.anim_frame_count+=game.dt

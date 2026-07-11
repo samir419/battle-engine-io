@@ -64,6 +64,7 @@ let player = {
     handle_input:function(inp,game){
         if(inp=="ultimate"){
             if(this.meter>=60){
+                game.freeze_frame(0.4)
                 this.meter-=60
                 this.set_state(inp)
             }
@@ -84,6 +85,7 @@ let player = {
         if (!["block","block stun","knockdown","hit","ko"].includes(this.state)){
             this.health-=damage
             this.temp.received_damage=damage
+            this.enable_physics=true
             if(damage>5){
                 this.knockdown()
             }else{
@@ -124,6 +126,7 @@ let player = {
                     self.state=x
                     self.state_buffer="none"
                 }
+                self.enable_physics=true
                 self.image="idle.png"
             }
         },
@@ -145,6 +148,7 @@ let player = {
         },
         "block":{
             update:function(self,game){
+                self.vx=0
                 self.image="block.png"
             }
         },
@@ -165,6 +169,7 @@ let player = {
             frames:0,
             offsetx:0,
             offsety:0,
+            temps:{},
             update:function(self,game){
                 if(this.frames==0){
                     self.image="knockdown.png"
@@ -172,22 +177,99 @@ let player = {
                     self.vx=100*-self.direction
                     self.vy=-400
                     self.is_grounded=false
+                    this.temps.h=self.h
+                    self.h=self.h/2
                 }
                 this.frames-=game.dt
                 if(this.frames<=0.5){
                     self.vx=0
-                    self.vy=0
                 }
                 if(this.frames<=0){
+                    self.h = this.temps.h
                     this.frames=0
                     self.state="idle"
                 }
             }
         },
+        "throw":{
+            frames:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            update:function(self,game){
+                if(this.frames==0){
+                    self.image="idle.png"
+                    this.frames=0.2//0.5 seconds
+                }
+                this.hitbox.x=self.x+self.w*self.direction
+                this.hitbox.y=self.y
+                this.hitbox.w=self.w
+                this.hitbox.h=self.h
+                this.frames-=game.dt
+                let opponent=game.match.get_opponent(self,game)
+                if(game.physics.aabb(this.hitbox,opponent,game)){
+                    if(opponent.state=="idle"||opponent.state=="block"){
+                        opponent.health-=20
+                        self.state="throwing"
+                        opponent.state="being thrown"
+                        self.states["throwing"]={
+                            frames:0,
+                            offsetx:0,
+                            offsety:0,
+                            temps:{},
+                            update:function(self,game){
+                                if(this.frames==0){
+                                    self.image="idle.png"
+                                    this.frames=0.6
+                                    self.vy=-600
+                                    self.is_grounded=false
+                                }
+                                this.frames-=game.dt
+                                if(this.frames<=0){
+                                    this.frames=0
+                                    self.state="idle"
+                                }
+                            }
+                        }
+                        opponent.states["being thrown"]={
+                            frames:0,
+                            offsetx:0,
+                            offsety:0,
+                            temps:{},
+                            update:function(self,game){
+                                if(this.frames==0){
+                                    self.image="idle.png"
+                                    this.frames=0.6
+                                    self.vy=-600
+                                    self.is_grounded=false
+                                }
+                                this.frames-=game.dt
+                                if(this.frames<=0){
+                                    this.frames=0
+                                    self.knockdown()
+                                }
+                            }
+                        }
+                    }
+                }
+                if(this.frames<=0){
+                    self.vx=0
+                    self.vy=0
+                    this.frames=0
+                    self.state="idle"
+                }
+            }
+        },
+        "throwing":{},
+        "being thrown":{},
         "ko":{
             offsetx:0,
             offsety:0,
+            temps:{},
             update:function(self,game){
+                if(!this.temps.h){
+                    this.temps.h=self.h/2
+                }
+                self.h=this.temps.h
+                game.physics.apply_physics(self,game)
                 self.image="ko.png"
             }
         },
