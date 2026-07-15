@@ -13,6 +13,7 @@ let physics = {
             actor.y=game.canvas.height-actor.h
             actor.vy=0
             actor.is_grounded=true
+            game.playsound("assets/land.wav")
         }
 
         //update position

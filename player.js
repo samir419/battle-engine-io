@@ -20,6 +20,7 @@ let player = {
             return
         }
         if(this.meter>60){
+            game.playsound("assets/meterup.wav")
             this.meter=60
         }
         if(this.enable_physics){
@@ -31,13 +32,21 @@ let player = {
             obj.update(this,game)
         }
     },
+    get_offset:function(i){
+        if(i=='x'){
+            return this.states[this.state].offsetx?this.states[this.state].offsetx:0
+        }
+        if(i=='y'){
+            return this.states[this.state].offsety?this.states[this.state].offsety:0
+        }
+    },
 
     render:function(game){
         let ctx = game.ctx
         let canvas = game.canvas
         let actor = this
         ctx.strokeStyle="green"
-        ctx.strokeRect(actor.x,actor.y,actor.w,actor.h)
+        //ctx.strokeRect(actor.x,actor.y,actor.w,actor.h)
         if(actor.states[actor.state].hitbox){
             let hitbox = actor.states[actor.state].hitbox
             ctx.strokeStyle="red"
@@ -49,10 +58,10 @@ let player = {
         if (actor.direction === -1) {
             ctx.translate(actor.x + actor.w, actor.y);
             ctx.scale(-1, 1);
-            ctx.drawImage(img, 0+(this.states[this.state].offsetx?this.states[this.state].offsetx:0), 0+(this.states[this.state].offsety?this.states[this.state].offsety:0));
+            ctx.drawImage(img, 0+this.get_offset('x'), 0+this.get_offset('y'));
         } else {
             ctx.translate(actor.x, actor.y);
-            ctx.drawImage(img, 0+(this.states[this.state].offsetx?this.states[this.state].offsetx:0), 0+(this.states[this.state].offsety?this.states[this.state].offsety:0));
+            ctx.drawImage(img, 0+this.get_offset('x'), 0+this.get_offset('y'));
         }
         ctx.restore(); 
         for(let i=0;i<actor.objects.length;i++){
@@ -87,22 +96,25 @@ let player = {
             this.temp.received_damage=damage
             this.enable_physics=true
             if(damage>5){
+                game.playsound("assets/hit1.wav")
                 this.knockdown()
             }else{
+                game.playsound("assets/hit.wav")
                 this.state="hit"
             }
             if(damage<=20){
                 this.meter+=damage-damage/4
                 attacker.meter+=damage
             }
-            game.freeze_frame(0.2)
+            game.freeze_frame(0.1)
         }
         if(this.state=="block"){
             if(damage<=20){
                 this.meter+=damage/2
                 attacker.meter+=damage/2
             }
-            this.block_stun(0.5)
+            this.block_stun(0.2)
+            game.playsound("assets/blockhit.wav")
         }
     },
 
@@ -125,6 +137,17 @@ let player = {
                     let x = self.state_buffer
                     self.state=x
                     self.state_buffer="none"
+                }
+                for (let key in this.states) {
+                    if(this.states[key].frames){
+                        this.states[key].frames=0
+                    }
+                    if(this.states[key].animation_frame){
+                        this.states[key].animation_frame=0
+                    }
+                    if(this.states[key].animation_frame_count){
+                        this.states[key].animation_frame_count=0
+                    }
                 }
                 self.enable_physics=true
                 self.image="idle.png"
@@ -169,7 +192,7 @@ let player = {
             frames:0,
             offsetx:0,
             offsety:0,
-            temps:{},
+            temps:{ct:0},
             update:function(self,game){
                 if(this.frames==0){
                     self.image="knockdown.png"
@@ -182,9 +205,14 @@ let player = {
                 }
                 this.frames-=game.dt
                 if(this.frames<=0.5){
-                    self.vx=0
+                    if(this.temps.ct==0){
+                        self.vx=0
+                        game.playsound("assets/knockdown.wav")
+                    }
+                    this.temps.ct++
                 }
                 if(this.frames<=0){
+                    this.temps.ct=0
                     self.h = this.temps.h
                     this.frames=0
                     self.state="idle"
@@ -207,7 +235,7 @@ let player = {
                 let opponent=game.match.get_opponent(self,game)
                 if(game.physics.aabb(this.hitbox,opponent,game)){
                     if(opponent.state=="idle"||opponent.state=="block"){
-                        opponent.health-=20
+                        game.playsound("assets/grab.wav")
                         self.state="throwing"
                         opponent.state="being thrown"
                         self.states["throwing"]={
@@ -244,6 +272,7 @@ let player = {
                                 this.frames-=game.dt
                                 if(this.frames<=0){
                                     this.frames=0
+                                    self.health-=20
                                     self.knockdown()
                                 }
                             }
@@ -262,14 +291,15 @@ let player = {
         "being thrown":{},
         "ko":{
             offsetx:0,
-            offsety:0,
+            offsety:40,
             temps:{},
             update:function(self,game){
                 if(!this.temps.h){
                     this.temps.h=self.h/2
                 }
-                self.h=this.temps.h
+                //self.h=this.temps.h
                 game.physics.apply_physics(self,game)
+                self.vx=0
                 self.image="ko.png"
             }
         },

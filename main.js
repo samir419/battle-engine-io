@@ -57,6 +57,13 @@ game.input=(inp)=>{
     game.match.handle_input(inp,game)
 }
 
+
+game.playsound=(src)=>{
+    let sound = new Audio()
+    sound.src=src
+    sound.play()
+}
+
 game.freeze_frame=(duration)=>{
     game.freeze_timer=duration
     game.state="freeze"
