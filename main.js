@@ -8,7 +8,8 @@ game.lastTime = 0;
 game.char_paths=[
     "chars/sakura",
     "chars/lilith",
-    "chars/hibiki"
+    "chars/hibiki",
+    "chars/vice"
 ]
 game.chars=[]
 for(let i=0;i<game.char_paths.length;i++){
