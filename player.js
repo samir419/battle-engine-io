@@ -50,7 +50,7 @@ let player = {
         if(actor.states[actor.state].hitbox){
             let hitbox = actor.states[actor.state].hitbox
             ctx.strokeStyle="red"
-            ctx.strokeRect(hitbox.x,hitbox.y,hitbox.w,hitbox.h)
+            //ctx.strokeRect(hitbox.x,hitbox.y,hitbox.w,hitbox.h)
         }
         let img = new Image()
         img.src=actor.path+this.image

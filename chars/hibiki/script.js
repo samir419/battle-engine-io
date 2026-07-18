@@ -112,24 +112,38 @@ let hibiki = {
         "attack":{
             frames:0,
             hitbox:{x:0,y:0,w:0,h:0},
+            animation_frame:0,
+            anim_frame_count:0,
+            animations:[
+                {image:"attack.png",duration:0.05},
+                {image:"attack.png",duration:0.1,damage:5},
+                {image:"attack.png",duration:0.05},
+            ],
             update:function(self,game){
                 if(this.frames==0){
                     if(self.is_grounded==true){
                         self.vx=0
                     }
-                    self.image="attack.png"
-                    this.frames=0.1//0.1 seconds
+                    this.frames=0.2
                     game.playsound("assets/strike.wav")
                 }
                 this.hitbox.x=self.x+self.w*self.direction
                 this.hitbox.y=self.y
                 this.hitbox.w=self.w
                 this.hitbox.h=self.h
-                this.frames-=game.dt
-                let opponent=game.match.get_opponent(self,game)
-                if(game.physics.aabb(this.hitbox,opponent,game)){
-                    opponent.hit(5,self,game)
+                self.image=this.animations[this.animation_frame].image
+                this.anim_frame_count+=game.dt
+                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
+                    this.animation_frame=(this.animation_frame+1)%this.animations.length
+                    if(this.animations[this.animation_frame].damage){
+                        let opponent=game.match.get_opponent(self,game)
+                        if(game.physics.aabb(this.hitbox,opponent,game)){
+                            opponent.hit(this.animations[this.animation_frame].damage,self,game)
+                        }
+                    }
+                    this.anim_frame_count=0
                 }
+                this.frames-=game.dt
                 if(this.frames<=0){
                     self.vx=0
                     self.vy=0
@@ -228,10 +242,39 @@ let hibiki = {
             }
         },
         "special 3":{
+            
             frames:0,
             hitbox:{x:0,y:0,w:0,h:0},
-            damage:5,
-            update:function(self,game){self.state="idle"}
+            animation_frame:0,
+            anim_frame_count:0,
+            animations:[
+                {image:"special3.png",duration:0.1}],
+            offsetx:0,
+            offsety:0,
+            temps:{},
+            update:function(self,game){
+                if(this.frames==0){
+                    this.temps.func=self.hit
+                    self.hit=function(){}
+                    self.vx=0
+                    this.frames=0.2
+                }
+                self.image=this.animations[this.animation_frame].image
+                this.anim_frame_count+=game.dt
+                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
+                    this.animation_frame=(this.animation_frame+1)%this.animations.length
+                    this.anim_frame_count=0
+                }
+                this.frames-=game.dt
+                if(this.frames<=0){
+                    self.hit=this.temps.func
+                    this.frames=0
+                    this.anim_frame_count=0
+                    this.animation_frame=0
+                    self.state="idle"
+                }
+            
+        }
         },
         "ultimate":{
             frames:0,

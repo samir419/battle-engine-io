@@ -319,6 +319,7 @@ let sakura = {
             update:function(self,game){
                 if(this.frames==0){
                     this.frames=1
+                    self.vx=200*self.direction
                 }
                 this.hitbox.x=self.x+50*self.direction
                 this.hitbox.y=self.y-20
@@ -328,9 +329,6 @@ let sakura = {
                 this.anim_frame_count+=game.dt
                 if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
                     this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animation_frame==0){
-                        self.vx=200*self.direction
-                    }
                     if(this.animation_frame==6){
                         self.vy=-600
                         self.is_grounded=false
@@ -345,6 +343,7 @@ let sakura = {
                 }
                 this.frames-=game.dt
                 if(this.frames<=0){
+                    this.animation_frame=0
                     self.vx=0
                     this.frames=0
                     self.state="idle"
@@ -382,17 +381,6 @@ let sakura = {
                             anim_frame_count:0,
                             animations:[
                                 {duration:0.1},
-                                {duration:0.1},
-                                {duration:0.1},
-                                {duration:0.1},
-                                {duration:0.1},
-                                {duration:0.1},
-                                {duration:0.1},
-                                {duration:0.1},
-                                {duration:0.1},
-                                {duration:0.1},
-                                {duration:0.1},
-                                {duration:0.1},
                             ],
                             update:function(self,game){
                                 this.x+=this.direction*100*game.dt
@@ -420,7 +408,7 @@ let sakura = {
                                 let img = new Image()
                                 let actor=this
                                 let center = {x:this.x+this.w/2,y:this.y+this.h/2}
-                                img.src=`chars/sakura/sprites/hadoken${this.animation_frame}.png`
+                                img.src=`chars/sakura/sprites/hadokenS${this.animation_frame}.png`
                                 this.anim_frame_count+=game.dt
                                 if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
                                     this.animation_frame=(this.animation_frame+1)%this.animations.length
@@ -430,10 +418,10 @@ let sakura = {
                                 if (actor.direction === -1) {
                                     ctx.translate(actor.x + actor.w, actor.y);
                                     ctx.scale(-1, 1);
-                                    ctx.drawImage(img, (this.w/2)-this.w/2, (this.h/2)-this.h/2, this.w,this.h);
+                                    ctx.drawImage(img, (this.w/2)-img.width/2, (this.h/2)-img.height/2);
                                 } else {
                                     ctx.translate(actor.x, actor.y);
-                                    ctx.drawImage(img, (this.w/2)-this.w/2, (this.h/2)-this.h/2, this.w, this.h);
+                                    ctx.drawImage(img, (this.w/2)-img.width/2, (this.h/2)-img.height/2);
                                 }
                                 ctx.restore(); 
                                 ctx.strokeStyle="orange"

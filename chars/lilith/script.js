@@ -122,7 +122,7 @@ let lilith = {
             anim_frame_count:0,
             animations:[
                 {image:"special1.png",duration:0.1},
-                {image:"special1.png",duration:0.006},
+                {image:"special1.png",duration:0.06},
                 {image:"special1.png",duration:0.4-0.06},
             ],
             update:function(self,game){

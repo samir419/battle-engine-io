@@ -32,14 +32,20 @@ let physics = {
                 a2.x+=500*game.dt*-a2.direction
             }
         }*/
-       if(a1.x+a1.w>a2.x&&a1.x+a1.w<a2.x+a2.w&&a1.y+a1.h>a2.y){
-            a1.x-=500*game.dt
-            a2.x+=a1.vx*game.dt
-       }
-       if(a1.x>a2.x&&a1.x<a2.x+a2.w&&a1.y+a1.h>a2.y){
-            a1.x+=500*game.dt
-            a2.x+=a1.vx*game.dt
-       }
+        const overlapY = Math.min(a1.y + a1.h, a2.y + a2.h) -
+                 Math.max(a1.y, a2.y);
+
+        if (overlapY > 10) {
+            if(a1.x+a1.w>a2.x&&a1.x+a1.w<a2.x+a2.w){
+                    a1.x-=500*game.dt
+                    a2.x+=a1.vx*game.dt
+            }
+            if(a1.x>a2.x&&a1.x<a2.x+a2.w){
+                    a1.x+=500*game.dt
+                    a2.x+=a1.vx*game.dt
+            }
+        }
+      
         
     },
 
@@ -52,7 +58,48 @@ let physics = {
                  actor1.y >= actor2.y + actor2.h)
     }
 }
+function barrier_collision(player,player2,object,stage,game){
+    if(player.x < 0){
+        player.x -= player.vx*game.dt
+        if(player.vx ==0){
+            player.x += 500*game.dt
+        }
+        if(stage.x<0&&player2.vx<0){
+            stage.x+=300*game.dt
+            player2.x-=player2.vx*game.dt
+       }
 
+       
+    }
+    if(player.x+player.w>object.width){
+        player.x -= player.vx*game.dt
+        if(player.vx ==0){
+            player.x -= 500*game.dt
+        }
+        if(stage.x+stage.w>object.width&&player2.vx>0){
+            stage.x-=300*game.dt
+            player2.x-=player2.vx*game.dt
+        }
+    }
+}
+
+function player_collision(player,player2,game){
+    if(player.x+player.w>player2.x&&player.x<player2.x+player2.w&&player2.x+player2.w<game.canvas.width&&player2.x>0
+        &&player.y>=player2.y-5&&player.y<=player2.y+5
+    ){
+        player2.x+=player.vx*game.dt
+        if(player.vx == 0 || player2.vx == 0){
+            player2.x+= 500*-player2.direction*game.dt
+            player.x+= 500*-player.direction*game.dt
+        }
+        if(player2.x+player2.w>game.canvas.width-10){
+            player.x+= 100*-player.direction*game.dt
+        }
+        if(player2.x<10){
+            player.x+= 100*-player.direction*game.dt
+        }
+    }
+}
 
 /*collide_and_eject:function(actor1,actor2,game){
         // axis-aligned bounding box collision resolution
@@ -77,17 +124,17 @@ let physics = {
         let cx2 = ax2 + aw2/2
         let cy2 = ay2 + ah2/2
 
-        let dx = cx1 - cx2
+        let vx = cx1 - cx2
         let dy = cy1 - cy2
 
-        let overlapX = (aw1 + aw2)/2 - Math.abs(dx)
+        let overlapX = (aw1 + aw2)/2 - Math.abs(vx)
         let overlapY = (ah1 + ah2)/2 - Math.abs(dy)
 
         if (overlapX > 0 && overlapY > 0) {
             // collision — resolve along smallest penetration
             if (overlapX < overlapY) {
                 // push on X axis
-                if (dx > 0) {
+                if (vx > 0) {
                     a1.x += overlapX
                 } else {
                     a1.x -= overlapX

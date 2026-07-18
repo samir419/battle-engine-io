@@ -96,6 +96,14 @@ game.init=()=>{
     requestAnimationFrame(game.update);
 }
 
+game.event=(data)=>{
+    if(data.name=="end match"){
+        let p1 = game.chars[Math.floor(Math.random()*game.chars.length)]
+        let p2 = game.chars[Math.floor(Math.random()*game.chars.length)]
+        game.match.create_match([p1,p2])
+    }
+}
+
 game.init()
 
 document.getElementById("start").onclick=()=>{

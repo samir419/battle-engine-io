@@ -132,7 +132,7 @@ let vice = {
                 }
                 this.hitbox.w = self.w;
                 this.hitbox.h = self.h;
-                this.hitbox.x = self.x;
+                this.hitbox.x = self.x+self.w*self.direction;
                 this.hitbox.y = self.y;
                 self.image=this.animations[this.animation_frame].image
                 this.anim_frame_count+=game.dt
@@ -185,7 +185,7 @@ let vice = {
                     if(this.animations[this.animation_frame].damage){
                         let opponent=game.match.get_opponent(self,game)
                         if(game.physics.aabb(this.hitbox,opponent,game)){
-                            if(opponent.state=="idle"||opponent.state=="block"){
+                            if(opponent.state=="idle"||opponent.state=="block"||opponent.state=="hit"){
                                 game.playsound("assets/grab.wav")
                                 self.state="throwing"
                                 opponent.state="being thrown"
@@ -281,7 +281,7 @@ let vice = {
                     if(this.animations[this.animation_frame].damage){
                         let opponent=game.match.get_opponent(self,game)
                         if(game.physics.aabb(this.hitbox,opponent,game)){
-                            if(opponent.state=="idle"||opponent.state=="block"){
+                            if(opponent.state=="idle"||opponent.state=="block"||opponent.state=="hit"){
                                 game.playsound("assets/grab.wav")
                                 opponent.state="being thrown"
                                 opponent.states["being thrown"]={
@@ -340,7 +340,7 @@ let vice = {
                 }
                 this.hitbox.w = self.w;
                 this.hitbox.h = self.h;
-                this.hitbox.x = self.x+30*self.direction;
+                this.hitbox.x = self.x+50*self.direction;
                 this.hitbox.y = self.y;
                 self.image=this.animations[this.animation_frame].image
                 this.anim_frame_count+=game.dt
@@ -382,14 +382,14 @@ let vice = {
             animation_frame:0,
             anim_frame_count:0,
             animations:[
-                {image:"special10.png",duration:0.1},
-                {image:"special11.png",duration:0.3,damage:15}
+                {image:"special10.png",duration:0.06},
+                {image:"special11.png",duration:0.2-0.06,damage:15}
             ],
             offsetx:0,
             offsety:0,
             update:function(self,game){
                 if(this.frames==0){
-                    this.frames=0.4//1 second
+                    this.frames=0.2//1 second
                 }
                 this.hitbox.w = self.w/2;
                 this.hitbox.h = self.h;
@@ -402,7 +402,7 @@ let vice = {
                     if(this.animations[this.animation_frame].damage){
                         let opponent=game.match.get_opponent(self,game)
                         if(game.physics.aabb(this.hitbox,opponent,game)){
-                            if(opponent.state=="idle"||opponent.state=="block"){
+                            if(opponent.state=="idle"||opponent.state=="block"||opponent.state=="hit"){
                                 game.playsound("assets/grab.wav")
                                 self.state="throwing"
                                 opponent.state="being thrown"

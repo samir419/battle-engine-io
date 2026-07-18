@@ -3,6 +3,7 @@ let match = {
     state:"standby",
     ai_enabled:false,
     ai_routine:0,
+    temps:{},
     update:function(game){
         if(this.state=="pause") return
         for(let i=0;i<this.actors.length;i++){
@@ -18,9 +19,24 @@ let match = {
         }
         this.handle_player_collision(game)
         this.handle_push_boundary_and_stage_scrolling(this.actors[0],this.actors[1],this.actors[2],game)
-         this.handle_push_boundary_and_stage_scrolling(this.actors[0],this.actors[2],this.actors[1],game)
+        this.handle_push_boundary_and_stage_scrolling(this.actors[0],this.actors[2],this.actors[1],game)
+        //barrier_collision(this.actors[1],this.actors[2],game.canvas,this.actors[0],game)
+        //barrier_collision(this.actors[2],this.actors[1],game.canvas,this.actors[0],game)
+        //player_collision(this.actors[1],this.actors[2],game)
+        //player_collision(this.actors[2],this.actors[1],game)
         if(this.ai_enabled){
             this.opponent_ai(game)
+        }
+        if(this.actors[1].health<=0||this.actors[2].health<=0){
+            if(!this.temps.endtimer){
+                this.temps.endtimer=3
+            }
+            this.temps.endtimer-=game.dt
+            if(this.temps.endtimer<=0){
+                game.event({name:"end match"})
+                this.temps={}
+            }
+           
         }
         
     },
