@@ -115,9 +115,9 @@ let hibiki = {
             animation_frame:0,
             anim_frame_count:0,
             animations:[
-                {image:"attack.png",duration:0.05},
-                {image:"attack.png",duration:0.1,damage:5},
-                {image:"attack.png",duration:0.05},
+                {image:"attack.png",duration:0.05,offset:{x:25,y:0}},
+                {image:"attack.png",duration:0.1,damage:5,offset:{x:25,y:0}},
+                {image:"attack.png",duration:0.05,offset:{x:25,y:0}},
             ],
             update:function(self,game){
                 if(this.frames==0){
@@ -141,6 +141,10 @@ let hibiki = {
                             opponent.hit(this.animations[this.animation_frame].damage,self,game)
                         }
                     }
+                    if(this.animations[this.animation_frame].offset){
+                        this.offsetx=this.animations[this.animation_frame].offset.x
+                        this.offsety=this.animations[this.animation_frame].offset.y
+                    }else{this.offsetx=0;this.offsety=0}
                     this.anim_frame_count=0
                 }
                 this.frames-=game.dt
@@ -160,7 +164,7 @@ let hibiki = {
             anim_frame_count:0,
             animations:[
                 {image:"special10.png",duration:0.2},
-                {image:"special11.png",duration:0.2,damage:true,offset:{x:0,y:-55}},
+                {image:"special11.png",duration:0.2,damage:true,offset:{x:50,y:-25}},
                 {image:"special10.png",duration:0.2},
             ],
             offsetx:0,

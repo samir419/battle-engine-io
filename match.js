@@ -43,7 +43,7 @@ let match = {
 
     create_match:function(chars){
         let p1 = {...player}
-        p1.x=0;
+        p1.x=((0+game.canvas.width/2)/2)-chars[0].width/2;
         p1.y=0;
         p1.w=chars[0].width;
         p1.h=chars[0].height
@@ -54,7 +54,7 @@ let match = {
         p1.id=1
 
         let p2 = {...player}
-        p2.x=game.canvas.width-chars[1].width;
+        p2.x=(game.canvas.width/2+game.canvas.width)/2-chars[1].width/2;
         p2.y=0;
         p2.w=chars[1].width;
         p2.h=chars[1].height
@@ -119,6 +119,10 @@ let match = {
             if(p2.meter>=60){
                 p2.handle_input("ultimate", game)
             }
+            /*p1.set_state(states[Math.floor(Math.random()*states.length)])
+            if(p1.meter>=60){
+                p1.handle_input("ultimate", game)
+            }*/
             this.ai_routine=0
         }
         

@@ -174,7 +174,7 @@ let vice = {
                 if(this.frames==0){
                     this.frames=0.4//1 second
                 }
-                this.hitbox.w = self.w/2;
+                this.hitbox.w = self.w/1.5;
                 this.hitbox.h = self.h;
                 this.hitbox.x = self.x+self.w*self.direction;
                 this.hitbox.y = self.y;
@@ -270,8 +270,8 @@ let vice = {
                 if(this.frames==0){
                     this.frames=1//1 second
                 }
-                this.hitbox.w = 50;
-                this.hitbox.h = self.h/2;
+                this.hitbox.w = 80;
+                this.hitbox.h = self.h/1.5;
                 this.hitbox.x = self.x+100*self.direction;
                 this.hitbox.y = self.y+50;
                 self.image=this.animations[this.animation_frame].image
@@ -330,7 +330,7 @@ let vice = {
             anim_frame_count:0,
             animations:[
                 {image:"special30.png",duration:0.1},
-                {image:"special31.png",duration:0.4,damage:5}
+                {image:"special31.png",duration:0.4,damage:15}
             ],
             offsetx:0,
             offsety:0,
@@ -349,22 +349,23 @@ let vice = {
                     if(this.animation_frame==1){
                         self.vx=400*self.direction
                     }
-                    if(this.animations[this.animation_frame].damage){
-                        let opponent=game.match.get_opponent(self,game)
-                        if(game.physics.aabb(this.hitbox,opponent,game)){
-                            opponent.hit(this.animations[this.animation_frame].damage,self,game)
-                            self.vx=0
-                            this.frames=0
-                            this.anim_frame_count=0
-                            this.animation_frame=0
-                            self.state="idle"
-                        }
-                    }
+                   
                     if(this.animations[this.animation_frame].offset){
                         this.offsetx=this.animations[this.animation_frame].offset.x
                         this.offsety=this.animations[this.animation_frame].offset.y
                     }else{this.offsetx=0;this.offsety=0}
                     this.anim_frame_count=0
+                }
+                if(this.animations[this.animation_frame].damage){
+                    let opponent=game.match.get_opponent(self,game)
+                    if(game.physics.aabb(this.hitbox,opponent,game)){
+                        opponent.hit(this.animations[this.animation_frame].damage,self,game)
+                        self.vx=0
+                        this.frames=0
+                        this.anim_frame_count=0
+                        this.animation_frame=0
+                        self.state="idle"
+                    }
                 }
                 this.frames-=game.dt
                 if(this.frames<=0){
@@ -391,7 +392,7 @@ let vice = {
                 if(this.frames==0){
                     this.frames=0.2//1 second
                 }
-                this.hitbox.w = self.w/2;
+                this.hitbox.w = self.w;
                 this.hitbox.h = self.h;
                 this.hitbox.x = self.x+self.w*self.direction;
                 this.hitbox.y = self.y;

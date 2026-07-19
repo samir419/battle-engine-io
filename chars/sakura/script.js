@@ -1,6 +1,6 @@
 let sakura = {
     name: "sakura",
-    width: 76,
+    width: 58,
     height: 87,
     states:{
         "jump":{
@@ -262,11 +262,11 @@ let sakura = {
             anim_frame_count:0,
             animations:[
                 {image:"special 2 0.png",duration:0.1},
-                {image:"special 2 1.png",duration:0.1,damage:10},
+                {image:"special 2 1.png",duration:0.1,damage:5},
                 {image:"special 2 0.png",duration:0.1},
-                {image:"special 2 1.png",duration:0.1,damage:10},
+                {image:"special 2 1.png",duration:0.1,damage:5},
                 {image:"special 2 0.png",duration:0.1},
-                {image:"special 2 1.png",duration:0.1,damage:10},
+                {image:"special 2 1.png",duration:0.1,damage:5},
             ],
             update:function(self,game){
                 if(this.frames==0){

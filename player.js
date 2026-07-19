@@ -20,7 +20,6 @@ let player = {
             return
         }
         if(this.meter>60){
-            game.playsound("assets/meterup.wav")
             this.meter=60
         }
         if(this.enable_physics){
@@ -50,7 +49,7 @@ let player = {
         if(actor.states[actor.state].hitbox){
             let hitbox = actor.states[actor.state].hitbox
             ctx.strokeStyle="red"
-            //ctx.strokeRect(hitbox.x,hitbox.y,hitbox.w,hitbox.h)
+           // ctx.strokeRect(hitbox.x,hitbox.y,hitbox.w,hitbox.h)
         }
         let img = new Image()
         img.src=actor.path+this.image
@@ -58,10 +57,10 @@ let player = {
         if (actor.direction === -1) {
             ctx.translate(actor.x + actor.w, actor.y);
             ctx.scale(-1, 1);
-            ctx.drawImage(img, 0+this.get_offset('x'), 0+this.get_offset('y'));
+            ctx.drawImage(img, ((this.w/2)-img.width/2)+this.get_offset('x')*this.direction, ((this.h/2)-img.height/2)+this.get_offset('y'));
         } else {
             ctx.translate(actor.x, actor.y);
-            ctx.drawImage(img, 0+this.get_offset('x'), 0+this.get_offset('y'));
+            ctx.drawImage(img, ((this.w/2)-img.width/2)+this.get_offset('x')*this.direction, ((this.h/2)-img.height/2)+this.get_offset('y'));
         }
         ctx.restore(); 
         for(let i=0;i<actor.objects.length;i++){
@@ -76,6 +75,7 @@ let player = {
                 game.freeze_frame(0.4)
                 this.meter-=60
                 this.set_state(inp)
+                game.playsound("assets/meterup.wav")
             }
             return
         }
@@ -95,6 +95,7 @@ let player = {
             this.health-=damage
             this.temp.received_damage=damage
             this.enable_physics=true
+            game.hit_effect({frames:0.1,x:this.x,y:this.y})
             if(damage>5){
                 game.playsound("assets/hit1.wav")
                 this.knockdown()
@@ -229,7 +230,7 @@ let player = {
                 }
                 this.hitbox.x=self.x+self.w*self.direction
                 this.hitbox.y=self.y
-                this.hitbox.w=self.w
+                this.hitbox.w=self.w/2
                 this.hitbox.h=self.h
                 this.frames-=game.dt
                 let opponent=game.match.get_opponent(self,game)

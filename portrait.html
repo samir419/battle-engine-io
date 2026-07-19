@@ -56,7 +56,7 @@
             <button class="btn" onclick="game.match.actors[1].handle_input('ultimate', game)">ultimate</button>
         </div>
         <button id="pause" class="btn">pause</button>
-        <button class="btn" onclick="document.getElementById('screen').requestFullscreen()">fullscreen</button>
+        <button class="btn" onclick="fulscrn()">fullscreen</button>
     </div>
     
     <script src="battle_engine.js"></script>
@@ -64,5 +64,12 @@
     <script src="player.js"></script>
     <script src="match.js"></script>
     <script src="main.js"></script>
+    <script>
+        function fulscrn(){
+            document.getElementById("game-canvas").style.width="100%"
+            document.getElementById('screen').requestFullscreen()
+            
+        }
+    </script>
 </body>
 </html>

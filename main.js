@@ -9,7 +9,8 @@ game.char_paths=[
     "chars/sakura",
     "chars/lilith",
     "chars/hibiki",
-    "chars/vice"
+    "chars/vice",
+    "chars/chunli"
 ]
 game.chars=[]
 for(let i=0;i<game.char_paths.length;i++){
@@ -56,6 +57,40 @@ game.render=()=>{
 
 game.input=(inp)=>{
     game.match.handle_input(inp,game)
+}
+
+game.hit_effect=(data)=>{
+    game.match.actors.push({
+        id:`hit${game.match.actors.length}`,
+        frames:data.frames,
+        x:data.x,
+        y:data.y,
+        w:50,
+        h:50,
+        update:function(game){
+            this.frames-=game.dt
+            if(this.frames<=0){
+                for(let i=0;i<game.match.actors.length;i++){
+                    if(game.match.actors[i].id){
+                        if(game.match.actors[i].id==this.id){
+                            game.match.actors.splice(i, 1);
+                        }
+                    }
+                }
+            }
+        },
+        render:function(game){
+            let ctx = game.ctx
+            let canvas = game.canvas
+            let img = new Image()
+            let actor=this
+            let center = {x:this.x+this.w/2,y:this.y+this.h/2}
+            img.src=`assets/hit_effect.png`
+            ctx.drawImage(img, (this.x+this.w/2)-img.width/2, (this.y+this.h/2)-img.height/2);
+            ctx.strokeStyle="orange"
+            ctx.strokeRect(this.x,this.y,this.w,this.h)
+        },
+    })
 }
 
 

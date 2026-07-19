@@ -1,6 +1,6 @@
 let lilith = {
     name: "lilith",
-    width: 62,
+    width: 58,
     height: 97,
     states:{
         "jump":{
@@ -155,7 +155,7 @@ let lilith = {
                             {image:"fb5.png",duration:0.1}
                         ],
                         update:function(self,game){
-                            this.x+=this.direction*70*game.dt
+                            this.x+=this.direction*50*game.dt
                             let opponent=this.target
                             if(game.physics.aabb(this,opponent,game)){
                                 opponent.hit(10,this.user,game)
@@ -228,7 +228,7 @@ let lilith = {
             update:function(self,game){
                 if(this.frames==0){
                     this.frames=0.5
-                    self.vx=200*self.direction
+                    self.vx=300*self.direction
                 }
                 this.hitbox.w = self.w * 2;
                 this.hitbox.h = self.h / 4;
@@ -322,7 +322,7 @@ let lilith = {
                 self.is_grounded=false
                 let opponent=game.match.get_opponent(self,game)
                 if(game.physics.aabb(this.hitbox,opponent,game)){
-                    opponent.hit(30,self,game)
+                    opponent.hit(40,self,game)
                 }
                 if(this.frames<=0){
                     this.frames=0
