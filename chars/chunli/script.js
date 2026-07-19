@@ -145,7 +145,11 @@ let chunli = {
             anim_frame_count:0,
             animations:[
                 {image:"attack.png",duration:0.05},
-                {image:"attack.png",duration:0.2,damage:5,offset:{x:50,y:0}},
+                {image:"attack.png",duration:0.2,damage:5,offset:{x:50,y:0},
+                    onhit:function(game,opponent){
+                        opponent.damage({damage:5,knockback:-200},game)
+                    }
+                },
                 {image:"attack.png",duration:0.05}
             ],
             offsetx:0,
@@ -169,7 +173,7 @@ let chunli = {
                     if(this.animations[this.animation_frame].damage){
                         let opponent=game.match.get_opponent(self,game)
                         if(game.physics.aabb(this.hitbox,opponent,game)){
-                            opponent.hit(this.animations[this.animation_frame].damage,self,game)
+                            this.animations[this.animation_frame].onhit(game,opponent)
                         }
                     }
                     if(this.animations[this.animation_frame].offset){
@@ -299,7 +303,19 @@ let chunli = {
             anim_frame_count:0,
             animations:[
                 {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.9,damage:5}
+                {image:"special2.png",duration:0.1,
+                    custom:function(self,game){
+                        self.vx=0
+                    }
+                },
+                {image:"special2.png",duration:0.1,damage:5,knockback:0},
+                {image:"special2.png",duration:0.1},
+                {image:"special2.png",duration:0.1,damage:5,knockback:0},
+                {image:"special2.png",duration:0.1},
+                {image:"special2.png",duration:0.1,damage:5,knockback:0},
+                {image:"special2.png",duration:0.1},
+                {image:"special2.png",duration:0.1},
+                {image:"special2.png",duration:0.1,damage:10,knockback:-300,knockdown:true}
             ],
             offsetx:0,
             offsety:0,
@@ -313,11 +329,22 @@ let chunli = {
                 this.hitbox.x = self.x;
                 this.hitbox.y = self.y;
                 self.image=this.animations[this.animation_frame].image
-                this.anim_frame_count+=game.dt
                 if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
                     this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animation_frame==1){
-                        self.vx=0
+                    let current = this.animations[this.animation_frame]
+                    if(current.custom){
+                        current.custom(self,game)
+                    }
+                    if(this.animations[this.animation_frame].damage){
+                        let opponent=game.match.get_opponent(self,game)
+                        if(game.physics.aabb(this.hitbox,opponent,game)){
+                            opponent.damage({
+                                damage:current.damage,
+                                knockback:current.knockback,
+                                knockdown:current.knockdown?current.knockdown:false,
+                            },game)
+                            game.hit_effect({frames:0.1,x:opponent.x,y:opponent.y+25*(this.animation_frame-2)})
+                        }
                     }
                     if(this.animations[this.animation_frame].offset){
                         this.offsetx=this.animations[this.animation_frame].offset.x
@@ -325,13 +352,7 @@ let chunli = {
                     }else{this.offsetx=0;this.offsety=0}
                     this.anim_frame_count=0
                 }
-                if(this.animations[this.animation_frame].damage){
-                    let opponent=game.match.get_opponent(self,game)
-                    if(game.physics.aabb(this.hitbox,opponent,game)){
-                        opponent.hit(this.animations[this.animation_frame].damage,self,game)
-                        game.hit_effect({frames:0.1,x:opponent.x,y:opponent.y+25*(this.animation_frame-2)})
-                    }
-                }
+                this.anim_frame_count+=game.dt
                 this.frames-=game.dt
                 if(this.frames<=0){
                     this.frames=0
@@ -348,11 +369,17 @@ let chunli = {
             anim_frame_count:0,
             animations:[
                 {image:"special3.png",duration:0.1},
-                {image:"special3.png",duration:0.1,damage:5},
+                {image:"special3.png",duration:0.1,damage:4,knockback:-50},
                 {image:"special3.png",duration:0.1},
-                {image:"special3.png",duration:0.1,damage:5},
+                {image:"special3.png",duration:0.1,damage:4,knockback:-50},
                 {image:"special3.png",duration:0.1},
-                {image:"special3.png",duration:0.1,damage:10},
+                {image:"special3.png",duration:0.1,damage:4,knockback:-50},
+                {image:"special3.png",duration:0.1},
+                 {image:"special3.png",duration:0.1,damage:4,knockback:-50},
+                {image:"special3.png",duration:0.1},
+                {image:"special3.png",duration:0.1,damage:4,knockback:-50},
+                {image:"special3.png",duration:0.1},
+                {image:"special3.png",duration:0.1,damage:10,knockback:-200},
             ],
             update:function(self,game){
                 if(this.frames==0){
@@ -364,13 +391,21 @@ let chunli = {
                 this.hitbox.w=self.w*2
                 this.hitbox.h=50
                 self.image=this.animations[this.animation_frame].image
-                this.anim_frame_count+=game.dt
                 if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
                     this.animation_frame=(this.animation_frame+1)%this.animations.length
+                    let current = this.animations[this.animation_frame]
+                    if(current.custom){
+                        current.custom(self,game)
+                    }
                     if(this.animations[this.animation_frame].damage){
                         let opponent=game.match.get_opponent(self,game)
                         if(game.physics.aabb(this.hitbox,opponent,game)){
-                            opponent.hit(this.animations[this.animation_frame].damage,self,game)
+                            opponent.damage({
+                                damage:current.damage,
+                                knockback:current.knockback?current.knockback:0,
+                                knockdown:current.knockdown?current.knockdown:false,
+                            },game)
+                            game.hit_effect({frames:0.1,x:opponent.x,y:opponent.y+25*(this.animation_frame-2)})
                         }
                     }
                     if(this.animations[this.animation_frame].offset){
@@ -379,6 +414,7 @@ let chunli = {
                     }else{this.offsetx=0;this.offsety=0}
                     this.anim_frame_count=0
                 }
+                this.anim_frame_count+=game.dt
                 this.frames-=game.dt
                 if(this.frames<=0||(self.frames>0&&self.is_grounded==true)){
                     this.frames=0
@@ -392,19 +428,52 @@ let chunli = {
             hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            total_frames:2.1,
             animations:[
+                {image:"special2.png",duration:0.2},
+                {image:"special2.png",duration:0.1,damage:5,
+                    custom:function(self,game){
+                        self.vx=0
+                    }
+                },
                 {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.9,damage:5},
+                {image:"special2.png",duration:0.1,damage:5},
                 {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.9,damage:5},
+                {image:"special2.png",duration:0.1,damage:5},
                 {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.06,damage:15}
+                {image:"special2.png",duration:0.1,damage:5,knockback:-300},
+                {image:"special2.png",duration:0.2,
+                    custom:function(self,game){
+                        self.vx=400*self.direction
+                    }
+                },
+                {image:"special2.png",duration:0.1,damage:5,
+                    custom:function(self,game){
+                        self.vx=0
+                    }},
+                {image:"special2.png",duration:0.1},
+                {image:"special2.png",duration:0.1,damage:5},
+                {image:"special2.png",duration:0.1},
+                {image:"special2.png",duration:0.1,damage:5},
+                {image:"special2.png",duration:0.1},
+                {image:"special2.png",duration:0.1,damage:5,knockback:-300},
+                {image:"special2.png",duration:0.2,
+                    custom:function(self,game){
+                        self.vx=400*self.direction
+                    }
+                },
+                {image:"special2.png",duration:0.1,damage:10,knockback:-300,knockdown:true,
+                    custom:function(self,game){
+                        self.vx=0
+                    }
+                },
+                {image:"special2.png",duration:0.1},
             ],
             offsetx:0,
             offsety:0,
             update:function(self,game){
                 if(this.frames==0){
-                    this.frames=2.16//1 second
+                    this.frames=this.total_frames
                     self.vx=400*self.direction
                 }
                 this.hitbox.w = self.w*2;
@@ -415,24 +484,26 @@ let chunli = {
                 this.anim_frame_count+=game.dt
                 if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
                     this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animation_frame==2||this.animation_frame==4){
-                        self.vx=400*self.direction
+                    let current = this.animations[this.animation_frame]
+                    if(current.custom){
+                        current.custom(self,game)
                     }
-                    if(this.animation_frame==1||this.animation_frame==3||this.animation_frame==5){
-                        self.vx=0
+                    if(this.animations[this.animation_frame].damage){
+                        let opponent=game.match.get_opponent(self,game)
+                        if(game.physics.aabb(this.hitbox,opponent,game)){
+                            opponent.damage({
+                                damage:current.damage,
+                                knockback:current.knockback,
+                                knockdown:current.knockdown?current.knockdown:false,
+                            },game)
+                            game.hit_effect({frames:0.1,x:opponent.x,y:opponent.y+25*(this.animation_frame-2)})
+                        }
                     }
                     if(this.animations[this.animation_frame].offset){
                         this.offsetx=this.animations[this.animation_frame].offset.x
                         this.offsety=this.animations[this.animation_frame].offset.y
                     }else{this.offsetx=0;this.offsety=0}
                     this.anim_frame_count=0
-                }
-                if(this.animations[this.animation_frame].damage){
-                    let opponent=game.match.get_opponent(self,game)
-                    if(game.physics.aabb(this.hitbox,opponent,game)){
-                        opponent.hit(this.animations[this.animation_frame].damage,self,game)
-                        game.hit_effect({frames:0.1,x:opponent.x,y:opponent.y+25*(this.animation_frame-2)})
-                    }
                 }
                 this.frames-=game.dt
                 if(this.frames<=0){

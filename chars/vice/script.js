@@ -185,7 +185,7 @@ let vice = {
                     if(this.animations[this.animation_frame].damage){
                         let opponent=game.match.get_opponent(self,game)
                         if(game.physics.aabb(this.hitbox,opponent,game)){
-                            if(opponent.state=="idle"||opponent.state=="block"||opponent.state=="hit"){
+                            if(opponent.state!="knockdown"){
                                 game.playsound("assets/grab.wav")
                                 self.state="throwing"
                                 opponent.state="being thrown"
@@ -281,7 +281,7 @@ let vice = {
                     if(this.animations[this.animation_frame].damage){
                         let opponent=game.match.get_opponent(self,game)
                         if(game.physics.aabb(this.hitbox,opponent,game)){
-                            if(opponent.state=="idle"||opponent.state=="block"||opponent.state=="hit"){
+                            if(opponent.state!="knockdown"){
                                 game.playsound("assets/grab.wav")
                                 opponent.state="being thrown"
                                 opponent.states["being thrown"]={
@@ -403,7 +403,7 @@ let vice = {
                     if(this.animations[this.animation_frame].damage){
                         let opponent=game.match.get_opponent(self,game)
                         if(game.physics.aabb(this.hitbox,opponent,game)){
-                            if(opponent.state=="idle"||opponent.state=="block"||opponent.state=="hit"){
+                            if(opponent.state!="knockdown"){
                                 game.playsound("assets/grab.wav")
                                 self.state="throwing"
                                 opponent.state="being thrown"

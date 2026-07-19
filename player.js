@@ -25,6 +25,14 @@ let player = {
         if(this.enable_physics){
             game.physics.apply_physics(this,game)
         }
+        if(this.temp.vel_timer){
+            this.x+=this.temp.vx*game.dt*this.direction
+            this.y+=this.temp.vy*game.dt
+            this.temp.vel_timer-=game.dt
+            if(this.temp.vel_timer<=0){
+                this.temp.vel_timer=null
+            }
+        }
        this.states[this.state].update(this,game)
        for(let i=0;i<this.objects.length;i++){
             let obj = this.objects[i]
@@ -38,6 +46,11 @@ let player = {
         if(i=='y'){
             return this.states[this.state].offsety?this.states[this.state].offsety:0
         }
+    },
+    set_velocity:function(data){
+        this.temp.vx=data.vx
+        this.temp.vy=data.vy
+        this.temp.vel_timer=data.duration
     },
 
     render:function(game){
@@ -119,6 +132,28 @@ let player = {
         }
     },
 
+    damage:function(data,game){
+        let damage = data.damage
+        let velx = data.knockback? data.knockback:0
+        if (!["block","block stun","knockdown","ko"].includes(this.state)){
+            this.enable_physics=true
+            game.hit_effect({frames:0.1,x:this.x,y:this.y})
+            if(data.knockdown){
+                game.playsound("assets/hit1.wav")
+                this.knockdown()
+            }else{
+                game.playsound("assets/hit.wav")
+                this.state="hit"
+            }
+        }
+        if(this.state=="block"){
+            damage=damage/4
+            velx=velx/2
+        }
+        this.health-=damage
+        this.set_velocity({vx:velx,vy:0,duration:0.2})
+    },
+
     block_stun:function(time){
         this.state="block stun"
         this.temp.block_stun_time=time
@@ -160,7 +195,7 @@ let player = {
                 if(this.frames==0){
                     self.image="hit.png"
                     this.frames=0.2
-                    self.vx=100*-self.direction
+                    //self.vx=100*-self.direction
                 }
                 this.frames-=game.dt
                 if(this.frames<=0){
