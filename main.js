@@ -287,11 +287,9 @@ function addSwipeListener(element, callback, minDistance = 50){
         }
 
         if(Math.abs(dx) > Math.abs(dy)){
-
             if(Math.abs(dx) > minDistance){
                 callback(dx > 0 ? "right" : "left");
             }
-
         } else {
 
             if(Math.abs(dy) > minDistance){
@@ -316,10 +314,19 @@ addSwipeListener(document.getElementById("touch-screen-left"), (direction) => {
         game.match.actors[1].set_state('throw')
     }
     if(direction == 'right'){
-        game.input('dash')
+        if(game.match.actors[1].direction==1){
+            game.input('dash')
+        }else{
+            game.input('back dash')
+        }
+       
     }
     if(direction == 'left'){
-        game.input('back dash')
+        if(game.match.actors[1].direction==1){
+            game.input('back dash')
+        }else{
+            game.input('dash')
+        }
     }
 });
 
@@ -334,9 +341,17 @@ addSwipeListener(document.getElementById("touch-screen-right"), (direction) => {
         game.match.actors[1].handle_input('ultimate', game)
     }
     if(direction == 'right'){
-        game.match.actors[1].set_state('special 1')
+        if(game.match.actors[1].direction==1){
+            game.match.actors[1].set_state('special 1')
+        }else{
+             game.match.actors[1].set_state('special 2')
+        }
     }
     if(direction == 'left'){
-        game.match.actors[1].set_state('special 2')
+        if(game.match.actors[1].direction==1){
+            game.match.actors[1].set_state('special 2')
+        }else{
+             game.match.actors[1].set_state('special 1')
+        }
     }
 });
