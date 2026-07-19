@@ -37,6 +37,10 @@
                 <button id="restart" class="btn">restart</button>
                 <button id="toggle-ai" class="btn">toggle ai</button>
             </div>
+            <div class="flex full row absolute" style="z-index: 1;" id="touch-screen">
+                <div id="touch-screen-left" class="flex one"></div>
+                <div id="touch-screen-right" class="flex one"></div>
+            </div>
             <canvas class="flex one" id="game-canvas"></canvas>
         </div>
         <div id="controls" class="flex row outline container wrappable">
@@ -52,6 +56,7 @@
             <button class="btn" onclick="game.match.actors[1].handle_input('ultimate', game)">ultimate</button>
         </div>
         <button id="pause" class="btn">pause</button>
+        <button class="btn" onclick="document.getElementById('screen').requestFullscreen()">fullscreen</button>
     </div>
     
     <script src="battle_engine.js"></script>

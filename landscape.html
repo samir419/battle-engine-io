@@ -45,7 +45,7 @@
             <div class="flex full absolute priority-1 center" style="background-color: rgba(0,0,0,0.8);" id="start-screen">
                 <button id="start" class="btn">start</button>
             </div>
-             <div class="flex full column absolute priority-1 hidden" style="background-color: rgba(0,0,0,0.4);" id="character-select">
+            <div class="flex full column absolute priority-1 hidden" style="background-color: rgba(0,0,0,0.4);" id="character-select">
                 <h1 id="chrlog">character select</h1>
                 <div id="char-renders" class="flex row wrappable"></div>
             </div>
@@ -53,6 +53,10 @@
                 <button id="resume" class="btn">resume</button>
                 <button id="restart" class="btn">restart</button>
                 <button id="toggle-ai" class="btn">toggle ai</button>
+            </div>
+            <div class="flex full row absolute" style="z-index: 1;" id="touch-screen">
+                <div id="touch-screen-left" class="flex one"></div>
+                <div id="touch-screen-right" class="flex one"></div>
             </div>
             <canvas class="flex one" id="game-canvas"></canvas>
         </div>

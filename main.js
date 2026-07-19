@@ -225,3 +225,83 @@ function handleKey(e){
 }
 
 document.addEventListener("keydown", handleKey);
+
+function addSwipeListener(element, callback, minDistance = 50){
+
+    let startX;
+    let startY;
+
+    element.addEventListener("touchstart", (e) => {
+
+        let t = e.touches[0];
+        startX = t.clientX;
+        startY = t.clientY;
+
+    });
+
+    element.addEventListener("touchend", (e) => {
+
+        let t = e.changedTouches[0];
+
+        let dx = t.clientX - startX;
+        let dy = t.clientY - startY;
+
+        if(Math.abs(dx) == Math.abs(dy)){
+            callback("none")
+            return
+        }
+
+        if(Math.abs(dx) > Math.abs(dy)){
+
+            if(Math.abs(dx) > minDistance){
+                callback(dx > 0 ? "right" : "left");
+            }
+
+        } else {
+
+            if(Math.abs(dy) > minDistance){
+                callback(dy > 0 ? "down" : "up");
+            }
+
+        }
+
+    });
+
+}
+
+
+addSwipeListener(document.getElementById("touch-screen-left"), (direction) => {
+    if(direction=="none"){
+        game.match.actors[1].set_state('block')
+    }
+    if(direction=='up'){
+        game.input('jump')
+    }
+    if(direction == 'down'){
+        game.match.actors[1].set_state('throw')
+    }
+    if(direction == 'right'){
+        game.input('dash')
+    }
+    if(direction == 'left'){
+        game.input('back dash')
+    }
+});
+
+addSwipeListener(document.getElementById("touch-screen-right"), (direction) => {
+    if(direction=="none"){
+        game.match.actors[1].set_state('attack')
+    }
+    if(direction=='up'){
+        game.match.actors[1].set_state('special 3')
+    }
+    if(direction == 'down'){
+        game.match.actors[1].handle_input('ultimate', game)
+    }
+    if(direction == 'right'){
+        game.match.actors[1].set_state('special 1')
+    }
+    if(direction == 'left'){
+        game.match.actors[1].set_state('special 2')
+    }
+});
