@@ -10,7 +10,8 @@ game.char_paths=[
     "chars/lilith",
     "chars/hibiki",
     "chars/vice",
-    "chars/chunli"
+    "chars/chunli",
+    "chars/mai"
 ]
 game.chars=[]
 for(let i=0;i<game.char_paths.length;i++){
@@ -136,6 +137,14 @@ game.event=(data)=>{
         let p1 = game.chars[Math.floor(Math.random()*game.chars.length)]
         let p2 = game.chars[Math.floor(Math.random()*game.chars.length)]
         game.match.create_match([p1,p2])
+    }
+}
+
+game.event_subscribers=[game,physics,battle_engine,match]
+
+game.emit_event=(data)=>{
+    for(let i=0;i<game.event_subscribers.length;i++){
+        game.event_subscribers[i].event(data)
     }
 }
 

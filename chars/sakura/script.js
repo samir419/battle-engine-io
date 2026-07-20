@@ -68,8 +68,8 @@ let sakura = {
                 }
                 let distance=Math.abs(this.target.x-self.x)
                 if(distance<90){
-                    self.state="attack"
-                    this.dash_counter=0
+                    //self.state="attack"
+                    //this.dash_counter=0
                     return
                 }
                 if(this.dash_counter<=0){
@@ -112,45 +112,30 @@ let sakura = {
         },
         "attack":{
             frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.3,
             animations:[
-                {image:"attack0.png",duration:0.05},
-                {image:"attack1.png",duration:0.2,damage:5},
-                {image:"attack2.png",duration:0.05}
+                {image:"attack0.png",duration:0.1},
+                {image:"attack1.png",duration:0.1,damage:5,knockback:-100},
+                {image:"attack2.png",duration:0.1}
             ],
-            update:function(self,game){
-                if(this.frames==0){
-                    if(self.is_grounded==true){
-                        self.vx=0
-                    }
-                    this.frames=0.3
-                    game.playsound("assets/strike.wav")
-                }
-                this.hitbox.x=self.x+50*self.direction
-                this.hitbox.y=self.y+20
-                this.hitbox.w=50
-                this.hitbox.h=50
-                self.image=this.animations[this.animation_frame].image
-                this.anim_frame_count+=game.dt
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animations[this.animation_frame].damage){
-                        let opponent=game.match.get_opponent(self,game)
-                        if(game.physics.aabb(this.hitbox,opponent,game)){
-                            opponent.hit(this.animations[this.animation_frame].damage,self,game)
-                        }
-                    }
-                    this.anim_frame_count=0
-                }
-                this.frames-=game.dt
-                if(this.frames<=0){
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:38,y:15,w:50,h:20},
+            init:function(game,obj,self){
+                if(self.is_grounded==true){
                     self.vx=0
-                    self.vy=0
-                    this.frames=0
-                    self.state="idle"
                 }
+                game.playsound("assets/strike.wav")
+            },
+            update:function(self,game){
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){
+                self.vx=0
+                self.vy=0
             }
         },
         "special 1":{

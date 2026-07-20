@@ -246,7 +246,6 @@ let hibiki = {
             }
         },
         "special 3":{
-            
             frames:0,
             hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
@@ -261,13 +260,23 @@ let hibiki = {
                     this.temps.func=self.hit
                     self.hit=function(){}
                     self.vx=0
-                    this.frames=0.2
+                    this.frames=0.4
                 }
                 self.image=this.animations[this.animation_frame].image
                 this.anim_frame_count+=game.dt
                 if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
                     this.animation_frame=(this.animation_frame+1)%this.animations.length
                     this.anim_frame_count=0
+                }
+                if(self.state_buffer!="none"){
+                    let x = self.state_buffer
+                    self.state=x
+                    self.state_buffer="none"
+                    self.hit=this.temps.func
+                    this.frames=0
+                    this.anim_frame_count=0
+                    this.animation_frame=0
+                    return
                 }
                 this.frames-=game.dt
                 if(this.frames<=0){
@@ -282,7 +291,30 @@ let hibiki = {
         },
         "ultimate":{
             frames:0,
-            update:function(self,game){self.state="idle"}
+            animation_frame:0,
+            anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:1,
+            animations:[
+                {image:"dash0.png",duration:0.1},
+                {image:"special2.png",duration:0.1,damage:10},
+                {image:"dash0.png",duration:0.1},
+                {image:"special11.png",duration:0.1,damage:10},
+                {image:"dash0.png",duration:0.1},
+                {image:"attack.png",duration:0.1,damage:10},
+                {image:"dash0.png",duration:0.1},
+                {image:"jumpattack.png",duration:0.1,damage:10},
+                {image:"dash0.png",duration:0.1},
+                {image:"special11.png",duration:0.1,damage:10,knockdown:true}
+            ],
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:30,y:0,w:59,h:103},
+            init:function(game,obj,self){self.vx=300},
+            update:function(self,game){
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){self.vx=0}
         },
         "jump attack":{
             frames:0,

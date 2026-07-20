@@ -74,7 +74,8 @@ let match = {
                 img.src=this.img
                 ctx.drawImage(img, this.x, this.y, this.w, this.h);
             },
-            update:function(){}
+            update:function(){},
+            event:function(data){},
         }
         this.actors = [stage,p1,p2]
         this.state="running"
@@ -145,5 +146,11 @@ let match = {
             return true
         }
        return false
+    }
+
+    ,event:function(data){
+        for(let i=0;i<this.actors.length;i++){
+            if(this.actors[i].event){this.actors[i].event(data)}
+        }
     }
 }

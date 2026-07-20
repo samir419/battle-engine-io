@@ -57,6 +57,7 @@ let physics = {
                  actor1.y + actor1.h <= actor2.y ||
                  actor1.y >= actor2.y + actor2.h)
     }
+    ,event:function(data){}
 }
 function barrier_collision(player,player2,object,stage,game){
     if(player.x < 0){

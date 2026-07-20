@@ -62,7 +62,7 @@ let player = {
         if(actor.states[actor.state].hitbox){
             let hitbox = actor.states[actor.state].hitbox
             ctx.strokeStyle="red"
-           // ctx.strokeRect(hitbox.x,hitbox.y,hitbox.w,hitbox.h)
+            ctx.strokeRect(hitbox.x,hitbox.y,hitbox.w,hitbox.h)
         }
         let img = new Image()
         img.src=actor.path+this.image
@@ -152,6 +152,7 @@ let player = {
         }
         this.health-=damage
         this.set_velocity({vx:velx,vy:0,duration:0.2})
+        game.emit_event({name:"player-hit",player:this.id,amount:damage})
     },
 
     block_stun:function(time){
@@ -339,5 +340,16 @@ let player = {
                 self.image="ko.png"
             }
         },
+    }
+
+    ,event:function(data){
+        if(data.name=="player-hit"){
+            if(this.state=="ultimate")return
+            if(this.id==data.player){
+                this.meter+=data.amount/2
+            }else{
+                this.meter+=data.amount
+            }
+        }
     }
 }

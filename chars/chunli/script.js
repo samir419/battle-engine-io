@@ -4,50 +4,50 @@ let chunli = {
     height: 96,
     states:{
         "jump":{
-            frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
+             frames:0,
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:5,
             animations:[
-                {image:"jump.png",duration:1}
+                {image:"jump0.png",duration:0.1},
+                {image:"jump2.png",duration:0.1},
+                //{image:"jump3.png",duration:0.1},
+                {image:"jump4.png",duration:0.1},
+                {image:"jump5.png",duration:0.1},
+                {image:"jump6.png",duration:0.1},
+                {image:"jump7.png",duration:0.1},
             ],
             offsetx:0,
             offsety:0,
+            hitbox_data:{x:0,y:0,w:0,h:0},
+            init:function(game,obj,self){
+                self.vy=-700
+                self.is_grounded=false
+                game.playsound("assets/jump.wav")
+            },
             update:function(self,game){
-                if(this.frames==0){
-                    this.frames=1//1 second
-                    if(self.is_grounded){
-                        self.vy=-700
-                        self.is_grounded=false
-                    }
-                }
-                if(self.state_buffer!="none"){
-                    let x = self.state_buffer
-                    self.state=x
+                game.battle_engine.update_animation(game,this,self)
+                if(self.state_buffer=="attack"){
+                    self.state="jump attack"
                     self.state_buffer="none"
-                    this.frames=0
                     this.anim_frame_count=0
                     this.animation_frame=0
+                    this.frames=0
                     return
                 }
-                self.image=this.animations[this.animation_frame].image
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animations[this.animation_frame].offset){
-                        this.offsetx=this.animations[this.animation_frame].offset.x
-                        this.offsety=this.animations[this.animation_frame].offset.y
-                    }else{this.offsetx=0;this.offsety=0}
-                    this.anim_frame_count=0
-                }
-                this.anim_frame_count+=game.dt
-                this.frames-=game.dt
-                if(this.frames<=0||self.is_grounded==true){
-                    self.vx=0
-                    this.frames=0
+                if(self.is_grounded==true){
+                    self.state="idle"
                     this.anim_frame_count=0
                     this.animation_frame=0
-                    self.state="idle"
+                    this.frames=0
+                    self.vx=0
+                    self.vy=0
                 }
+            },
+            end:function(game,obj,self){
+                self.vx=0
+                self.vy=0
             }
         },
         "dash":{
@@ -56,7 +56,15 @@ let chunli = {
             animation_frame:0,
             anim_frame_count:0,
             animations:[
-                {image:"dash.png",duration:4}
+                {image:"dash0.png",duration:0.1},
+                {image:"dash1.png",duration:0.1},
+                {image:"dash2.png",duration:0.1},
+                {image:"dash3.png",duration:0.1},
+                {image:"dash4.png",duration:0.1},
+                {image:"dash5.png",duration:0.1},
+                {image:"dash6.png",duration:0.1},
+                {image:"dash7.png",duration:0.1},
+                {image:"dash8.png",duration:0.1}
             ],
             offsetx:0,
             offsety:0,
@@ -100,7 +108,16 @@ let chunli = {
             animation_frame:0,
             anim_frame_count:0,
             animations:[
-                {image:"dash.png",duration:4}
+                {image:"dash8.png",duration:0.1},
+                {image:"dash7.png",duration:0.1},
+                {image:"dash6.png",duration:0.1},
+                {image:"dash5.png",duration:0.1},
+                {image:"dash4.png",duration:0.1},
+                {image:"dash3.png",duration:0.1},
+                {image:"dash2.png",duration:0.1},
+                {image:"dash1.png",duration:0.1},
+                {image:"dash0.png",duration:0.1},
+
             ],
             offsetx:0,
             offsety:0,
@@ -161,6 +178,15 @@ let chunli = {
                     }
                     this.frames=0.3
                     game.playsound("assets/strike.wav")
+                }
+                if(self.state_buffer!="none"&&self.state_buffer!="attack"){
+                    let x = self.state_buffer
+                    self.state=x
+                    self.state_buffer="none"
+                    this.frames=0
+                    this.anim_frame_count=0
+                    this.animation_frame=0
+                    return
                 }
                 this.hitbox.w = self.w*1.5;
                 this.hitbox.h = self.h;
@@ -302,26 +328,28 @@ let chunli = {
             animation_frame:0,
             anim_frame_count:0,
             animations:[
-                {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.1,
+                {image:"special21.png",duration:0.1},
+                {image:"special21.png",duration:0.1,
                     custom:function(self,game){
                         self.vx=0
                     }
                 },
-                {image:"special2.png",duration:0.1,damage:5,knockback:0},
-                {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.1,damage:5,knockback:0},
-                {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.1,damage:5,knockback:0},
-                {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.1,damage:10,knockback:-300,knockdown:true}
+                {image:"special20.png",duration:0.1,damage:5,knockback:0},
+                {image:"special21.png",duration:0.1},
+                {image:"special22.png",duration:0.1,damage:5,knockback:0},
+                {image:"special21.png",duration:0.1},
+                {image:"special23.png",duration:0.1,damage:5,knockback:0},
+                {image:"special21.png",duration:0.1},
+                {image:"special21.png",duration:0.1},
+                {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true},
+                {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true},
+                {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true},
             ],
             offsetx:0,
             offsety:0,
             update:function(self,game){
                 if(this.frames==0){
-                    this.frames=1//1 second
+                    this.frames=1.2
                     self.vx=400*self.direction
                 }
                 this.hitbox.w = self.w*1.5;
@@ -368,22 +396,27 @@ let chunli = {
             animation_frame:0,
             anim_frame_count:0,
             animations:[
-                {image:"special3.png",duration:0.1},
-                {image:"special3.png",duration:0.1,damage:4,knockback:-50},
-                {image:"special3.png",duration:0.1},
-                {image:"special3.png",duration:0.1,damage:4,knockback:-50},
-                {image:"special3.png",duration:0.1},
-                {image:"special3.png",duration:0.1,damage:4,knockback:-50},
-                {image:"special3.png",duration:0.1},
-                 {image:"special3.png",duration:0.1,damage:4,knockback:-50},
-                {image:"special3.png",duration:0.1},
-                {image:"special3.png",duration:0.1,damage:4,knockback:-50},
-                {image:"special3.png",duration:0.1},
-                {image:"special3.png",duration:0.1,damage:10,knockback:-200},
+                {image:"special30.png",duration:0.1},
+                {image:"special31.png",duration:0.05},
+                {image:"special32.png",duration:0.1},
+                {image:"special33.png",duration:0.1,damage:4,knockback:-50},
+                {image:"special34.png",duration:0.1},
+                {image:"special35.png",duration:0.1,damage:4,knockback:-50},
+                {image:"special36.png",duration:0.1},
+                {image:"special37.png",duration:0.1,damage:4,knockback:-50},
+                {image:"special33.png",duration:0.1},
+                {image:"special34.png",duration:0.1,damage:4,knockback:-50},
+                {image:"special35.png",duration:0.1},
+                {image:"special36.png",duration:0.1,damage:4,knockback:-50},
+                {image:"special37.png",duration:0.1},
+                {image:"special33.png",duration:0.1,damage:10,knockback:-200},
+                {image:"special38.png",duration:0.1},
+                {image:"special39.png",duration:0.1},
+                {image:"special310.png",duration:0.1},
             ],
             update:function(self,game){
                 if(this.frames==0){
-                    this.frames=1.2
+                    this.frames=1.65
                     self.vx=250*self.direction
                 }
                 this.hitbox.x=self.x-self.w/2
@@ -430,44 +463,44 @@ let chunli = {
             anim_frame_count:0,
             total_frames:2.1,
             animations:[
-                {image:"special2.png",duration:0.2},
-                {image:"special2.png",duration:0.1,damage:5,
+                {image:"special21.png",duration:0.2},
+                {image:"special22.png",duration:0.1,damage:5,
                     custom:function(self,game){
                         self.vx=0
                     }
                 },
-                {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.1,damage:5},
-                {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.1,damage:5},
-                {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.1,damage:5,knockback:-300},
-                {image:"special2.png",duration:0.2,
+                {image:"special21.png",duration:0.1},
+                {image:"special20.png",duration:0.1,damage:5},
+                {image:"special21.png",duration:0.1},
+                {image:"special23.png",duration:0.1,damage:5},
+                {image:"special21.png",duration:0.1},
+                {image:"special22.png",duration:0.1,damage:5,knockback:-300},
+                {image:"special21.png",duration:0.2,
                     custom:function(self,game){
                         self.vx=400*self.direction
                     }
                 },
-                {image:"special2.png",duration:0.1,damage:5,
+                {image:"special20.png",duration:0.1,damage:5,
                     custom:function(self,game){
                         self.vx=0
                     }},
-                {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.1,damage:5},
-                {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.1,damage:5},
-                {image:"special2.png",duration:0.1},
-                {image:"special2.png",duration:0.1,damage:5,knockback:-300},
-                {image:"special2.png",duration:0.2,
+                {image:"special21.png",duration:0.1},
+                {image:"special23.png",duration:0.1,damage:5},
+                {image:"special21.png",duration:0.1},
+                {image:"special22.png",duration:0.1,damage:5},
+                {image:"special21.png",duration:0.1},
+                {image:"special20.png",duration:0.1,damage:5,knockback:-300},
+                {image:"special21.png",duration:0.2,
                     custom:function(self,game){
                         self.vx=400*self.direction
                     }
                 },
-                {image:"special2.png",duration:0.1,damage:10,knockback:-300,knockdown:true,
+                {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true,
                     custom:function(self,game){
                         self.vx=0
                     }
                 },
-                {image:"special2.png",duration:0.1},
+                {image:"special24.png",duration:0.1},
             ],
             offsetx:0,
             offsety:0,
@@ -513,7 +546,54 @@ let chunli = {
                     self.state="idle"
                 }
             }
-        }
+        },
+        "jump attack":{
+            frames:0,
+            animation_frame:0,
+            anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.4,
+            animations:[
+                {image:"jumpattack.png",duration:0.1},
+                {image:"jumpattack.png",duration:0.1,
+                    custom:function(game,obj,self){
+                        let opponent=game.match.get_opponent(self,game)
+                        if(game.physics.aabb(obj.hitbox,opponent,game)){
+                            opponent.damage({
+                                damage:5,
+                                knockback:0,
+                                knockdown:false,
+                            },game)
+                            self.vy=-700
+                        }
+                    }
+                },
+                {image:"jumpattack.png",duration:0.1,
+                    custom:function(game,obj,self){
+                        let opponent=game.match.get_opponent(self,game)
+                        if(game.physics.aabb(obj.hitbox,opponent,game)){
+                            opponent.damage({
+                                damage:5,
+                                knockback:0,
+                                knockdown:false,
+                            },game)
+                            self.vy=-700
+                        }
+                    }
+                },
+                {image:"jumpattack.png",duration:0.1},
+            ],
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:0,y:87,w:50,h:20},
+            init:function(game,obj,self){
+                game.playsound("assets/strike.wav")
+            },
+            update:function(self,game){
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){}
+        },
     }
 }
 

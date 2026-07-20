@@ -75,46 +75,25 @@ let lilith = {
         },
         "attack":{
             frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.3,
             animations:[
-                {image:"attack0.png",duration:0.05},
-                {image:"attack3.png",duration:0.2,damage:5},
-                {image:"attack4.png",duration:0.05},
+                {image:"attack0.png",duration:0.1},
+                {image:"attack3.png",duration:0.1,damage:5,knockback:-100},
+                {image:"attack4.png",duration:0.1}
             ],
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:40,y:15,w:50,h:20},
+            init:function(game,obj,self){
+                game.playsound("assets/strike.wav")
+            },
             update:function(self,game){
-                if(this.frames==0){
-                    if(self.is_grounded==true){
-                        self.vx=0
-                    }
-                    this.frames=0.3
-                    game.playsound("assets/strike.wav")
-                }
-                this.hitbox.x=self.x+self.w*self.direction
-                this.hitbox.y=self.y
-                this.hitbox.w=self.w
-                this.hitbox.h=self.h
-                self.image=this.animations[this.animation_frame].image
-                this.anim_frame_count+=game.dt
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animations[this.animation_frame].damage){
-                        let opponent=game.match.get_opponent(self,game)
-                        if(game.physics.aabb(this.hitbox,opponent,game)){
-                            opponent.hit(this.animations[this.animation_frame].damage,self,game)
-                        }
-                    }
-                    this.anim_frame_count=0
-                }
-                this.frames-=game.dt
-                if(this.frames<=0){
-                    self.vx=0
-                    self.vy=0
-                    this.frames=0
-                    self.state="idle"
-                }
-            }
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){}
         },
         "special 1":{
             frames:0,
@@ -218,16 +197,18 @@ let lilith = {
             hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            total_frames:0.6,
             animations:[
-                {image:"special20.png",duration:0.1,damage:true},
                 {image:"special21.png",duration:0.1},
-                {image:"special20.png",duration:0.1,damage:true},
+                {image:"special20.png",duration:0.1,damage:5,knockback:-50},
                 {image:"special21.png",duration:0.1},
-                {image:"special20.png",duration:0.1,damage:true},
+                {image:"special20.png",duration:0.1,damage:5,knockback:-50},
+                {image:"special21.png",duration:0.1},
+                {image:"special20.png",duration:0.1,damage:5,knockback:-50},
             ],
             update:function(self,game){
                 if(this.frames==0){
-                    this.frames=0.5
+                    this.frames=this.total_frames
                     self.vx=300*self.direction
                 }
                 this.hitbox.w = self.w * 2;
@@ -238,12 +219,24 @@ let lilith = {
                 this.anim_frame_count+=game.dt
                 if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
                     this.animation_frame=(this.animation_frame+1)%this.animations.length
+                    let current = this.animations[this.animation_frame]
+                    if(current.custom){
+                        current.custom(self,game)
+                    }
                     if(this.animations[this.animation_frame].damage){
                         let opponent=game.match.get_opponent(self,game)
                         if(game.physics.aabb(this.hitbox,opponent,game)){
-                            opponent.hit(5,self,game)
+                            opponent.damage({
+                                damage:current.damage,
+                                knockback:current.knockback,
+                                knockdown:current.knockdown?current.knockdown:false,
+                            },game)
                         }
                     }
+                    if(this.animations[this.animation_frame].offset){
+                        this.offsetx=this.animations[this.animation_frame].offset.x
+                        this.offsety=this.animations[this.animation_frame].offset.y
+                    }else{this.offsetx=0;this.offsety=0}
                     this.anim_frame_count=0
                 }
                 this.frames-=game.dt
@@ -305,31 +298,37 @@ let lilith = {
         },
         "ultimate":{
             frames:0,
+            animation_frame:0,
+            anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:1,
+            animations:[
+                {image:"ultimate.png",duration:0.1,damage:5},
+                {image:"ultimate.png",duration:0.1,damage:5},
+                {image:"ultimate.png",duration:0.1,damage:5},
+                {image:"ultimate.png",duration:0.1,damage:5},
+                {image:"ultimate.png",duration:0.1,damage:5},
+                {image:"ultimate.png",duration:0.1,damage:5},
+                {image:"ultimate.png",duration:0.1,damage:5},
+                {image:"ultimate.png",duration:0.1,damage:5},
+                {image:"ultimate.png",duration:0.1,damage:5},
+                {image:"ultimate.png",duration:0.1,damage:5,knockdown:true}
+            ],
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:-25,y:-25,w:58+75,h:97+75},
+            init:function(game,obj,self){
+                self.enable_physics=false
+            },
             update:function(self,game){
-                if(this.frames==0){
-                    this.frames=1
-                    self.image="ultimate.png"
-                    self.enable_physics=false
-                }
-                this.hitbox.x=self.x-25
-                this.hitbox.y=self.y-25
-                this.hitbox.w=self.w+75
-                this.hitbox.h=self.h+75
-                this.frames-=game.dt
+                game.battle_engine.update_animation(game,this,self)
                 self.x+=self.direction*150*game.dt
-                self.y-=150*game.dt
+                self.y-=130*game.dt
                 self.is_grounded=false
-                let opponent=game.match.get_opponent(self,game)
-                if(game.physics.aabb(this.hitbox,opponent,game)){
-                    opponent.hit(40,self,game)
-                }
-                if(this.frames<=0){
-                    this.frames=0
-                    self.vx=0
-                    self.state="idle"
-                    self.enable_physics=true
-                }
+            },
+            end:function(game,obj,self){
+                self.vx=0
+                self.enable_physics=true
             }
         },
         "jump attack":{
