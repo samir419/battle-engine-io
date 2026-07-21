@@ -19,7 +19,7 @@ for(let i=0;i<game.char_paths.length;i++){
     script.src=`${game.char_paths[i]}/script.js`
     document.querySelector("body").appendChild(script)
 }
-
+let chosen_player
 game.physics = physics
 game.battle_engine = battle_engine
 game.match = match
@@ -134,9 +134,15 @@ game.init=()=>{
 
 game.event=(data)=>{
     if(data.name=="end match"){
-        let p1 = game.chars[Math.floor(Math.random()*game.chars.length)]
-        let p2 = game.chars[Math.floor(Math.random()*game.chars.length)]
-        game.match.create_match([p1,p2])
+        if(game.match.format=="random"){
+            let p1 = game.chars[Math.floor(Math.random()*game.chars.length)]
+            let p2 = game.chars[Math.floor(Math.random()*game.chars.length)]
+            game.match.create_match([p1,p2])
+        }else{
+            let p1 = chosen_player
+            let p2 = game.chars[Math.floor(Math.random()*game.chars.length)]
+            game.match.create_match([p1,p2])
+        }
     }
 }
 
@@ -151,8 +157,6 @@ game.emit_event=(data)=>{
 game.init()
 
 document.getElementById("start").onclick=()=>{
-    document.getElementById("start-screen").style.display="none"
-    document.getElementById("character-select").style.display="flex"
     let selectnum=1
     let p1
     let p2
@@ -166,18 +170,62 @@ document.getElementById("start").onclick=()=>{
             btn.onclick=()=>{
                 if(selectnum==1){
                     p1 = game.chars[i]
-                    selectnum++
-                    char_select()
+                    chosen_player=p1
+                    if(game.match.format=="arcade"){
+                        document.getElementById("character-select").style.display="none"
+                        p2 = game.chars[Math.floor(Math.random()*game.chars.length)]
+                        game.match.ai_enabled=true
+                        game.match.create_match([p1,p2])
+                    }else{
+                        selectnum++
+                        char_select()
+                    }
                 }else{
                     p2 = game.chars[i]
                     document.getElementById("character-select").style.display="none"
+                     game.match.ai_enabled=false
                     game.match.create_match([p1,p2])
                 }
+                game.state="running"
             }
             document.getElementById("char-renders").append(btn)
         }
     }
-    char_select()
+    document.getElementById("start-screen").style.display="none"
+    document.getElementById("mode-select").style.display="flex"
+    document.getElementById("formats").innerHTML=""
+    let arcadebtn = document.createElement("button")
+    arcadebtn.className="btn"
+    arcadebtn.textContent="arcade"
+    arcadebtn.onclick=()=>{
+        document.getElementById("mode-select").style.display="none"
+        document.getElementById("character-select").style.display="flex"
+        game.match.format="arcade"
+        char_select()
+    }
+    let pctbtn = document.createElement("button")
+    pctbtn.className="btn"
+    pctbtn.textContent="practice"
+    pctbtn.onclick=()=>{
+        document.getElementById("mode-select").style.display="none"
+        document.getElementById("character-select").style.display="flex"
+        game.match.format="practice"
+        char_select()
+    }
+    let randombtn = document.createElement("button")
+    randombtn.className="btn"
+    randombtn.textContent="random"
+    randombtn.onclick=()=>{
+        document.getElementById("mode-select").style.display="none"
+        game.match.format="random"
+        game.match.ai_enabled=true
+        p1 = game.chars[Math.floor(Math.random()*game.chars.length)]
+        p2 = game.chars[Math.floor(Math.random()*game.chars.length)]
+        game.match.create_match([p1,p2])
+        game.state="running"
+    }
+    document.getElementById("formats").append(arcadebtn,randombtn,pctbtn)
+
 }
 
 document.getElementById("pause").onclick=()=>{
@@ -192,33 +240,7 @@ document.getElementById("resume").onclick=()=>{
 
 document.getElementById("restart").onclick=()=>{
     document.getElementById("pause-menu").style.display="none"
-    document.getElementById("character-select").style.display="flex"
-    let selectnum=1
-    let p1
-    let p2
-    function char_select(){
-        document.getElementById("char-renders").innerHTML=""
-        document.getElementById("chrlog").textContent=`player ${selectnum} select--`
-        for(let i=0;i<game.chars.length;i++){
-            let btn = document.createElement("button")
-            btn.classList="btn"
-            btn.textContent=game.chars[i].name
-            btn.onclick=()=>{
-                if(selectnum==1){
-                    p1 = game.chars[i]
-                    selectnum++
-                    char_select()
-                }else{
-                    p2 = game.chars[i]
-                    document.getElementById("character-select").style.display="none"
-                    game.state="running"
-                    game.match.create_match([p1,p2])
-                }
-            }
-            document.getElementById("char-renders").append(btn)
-        }
-    }
-    char_select()
+    document.getElementById("start-screen").style.display="flex"
 }
 
 document.getElementById("toggle-ai").onclick=()=>{

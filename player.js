@@ -57,13 +57,16 @@ let player = {
         let ctx = game.ctx
         let canvas = game.canvas
         let actor = this
-        ctx.strokeStyle="green"
-        //ctx.strokeRect(actor.x,actor.y,actor.w,actor.h)
-        if(actor.states[actor.state].hitbox){
-            let hitbox = actor.states[actor.state].hitbox
-            ctx.strokeStyle="red"
-            ctx.strokeRect(hitbox.x,hitbox.y,hitbox.w,hitbox.h)
+        if(game.match.format=="practice"){
+            ctx.strokeStyle="green"
+            ctx.strokeRect(actor.x,actor.y,actor.w,actor.h)
+            if(actor.states[actor.state].hitbox){
+                let hitbox = actor.states[actor.state].hitbox
+                ctx.strokeStyle="red"
+                ctx.strokeRect(hitbox.x,hitbox.y,hitbox.w,hitbox.h)
+            }
         }
+       
         let img = new Image()
         img.src=actor.path+this.image
         ctx.save();
@@ -341,7 +344,6 @@ let player = {
             }
         },
     }
-
     ,event:function(data){
         if(data.name=="player-hit"){
             if(this.state=="ultimate")return

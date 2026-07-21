@@ -29,7 +29,7 @@ let match = {
         }
         if(this.actors[1].health<=0||this.actors[2].health<=0){
             if(!this.temps.endtimer){
-                this.temps.endtimer=3
+                this.temps.endtimer=2
             }
             this.temps.endtimer-=game.dt
             if(this.temps.endtimer<=0){
