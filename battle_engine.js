@@ -16,10 +16,16 @@ let battle_engine={
             obj.frames=obj.total_frames
             obj.init(game,obj,self)
         }
+        let difference
+        if(self.direction==-1){
+            difference=-obj.hitbox_data.w
+        }else{
+            difference=0
+        }
         obj.hitbox.w = obj.hitbox_data.w;
         obj.hitbox.h = obj.hitbox_data.h;
-        obj.hitbox.x = self.x+obj.hitbox_data.x*self.direction;
-        obj.hitbox.y = self.y+obj.hitbox_data.y;
+        obj.hitbox.x = (self.x+self.w/2)+obj.hitbox_data.x*self.direction+(difference);
+        obj.hitbox.y = (self.y+self.h/2)+obj.hitbox_data.y;
         self.image=obj.animations[obj.animation_frame].image
         obj.anim_frame_count+=game.dt
         if(obj.anim_frame_count>=obj.animations[obj.animation_frame].duration){
@@ -35,6 +41,7 @@ let battle_engine={
                         damage:current.damage,
                         knockback:current.knockback,
                         knockdown:current.knockdown?current.knockdown:false,
+                        stun:current.stun?current.stun:0.2
                     },game)
                 }
             }

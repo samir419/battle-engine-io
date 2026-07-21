@@ -117,12 +117,12 @@ let hibiki = {
             total_frames:0.3,
             animations:[
                 {image:"attack.png",duration:0.1,offset:{x:25,y:0}},
-                {image:"attack.png",duration:0.1,damage:5,knockback:-100,offset:{x:25,y:0}},
+                {image:"attack.png",duration:0.1,damage:5,knockback:-100,offset:{x:25,y:0},stun:0.4},
                 {image:"attack.png",duration:0.1,offset:{x:25,y:0}}
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:66,y:0,w:66,h:90},
+            hitbox_data:{x:30,y:-40,w:60,h:30},
             init:function(game,obj,self){
                 if(self.is_grounded==true){
                     self.vx=0
@@ -267,7 +267,7 @@ let hibiki = {
                     self.state="idle"
                 }
             
-        }
+            }
         },
         "ultimate":{
             frames:0,

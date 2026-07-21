@@ -27,7 +27,7 @@ let match = {
         if(this.ai_enabled){
             this.opponent_ai(game)
         }
-        if(this.actors[1].health<=0||this.actors[2].health<=0){
+        if((this.actors[1].health<=0||this.actors[2].health<=0)&&this.format!="practice"){
             if(!this.temps.endtimer){
                 this.temps.endtimer=2
             }

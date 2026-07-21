@@ -86,10 +86,6 @@ let chunli = {
                 this.anim_frame_count+=game.dt
                 if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
                     this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animations[this.animation_frame].offset){
-                        this.offsetx=this.animations[this.animation_frame].offset.x
-                        this.offsety=this.animations[this.animation_frame].offset.y
-                    }else{this.offsetx=0;this.offsety=0}
                     this.anim_frame_count=0
                 }
                 this.frames-=game.dt
@@ -139,10 +135,6 @@ let chunli = {
                 this.anim_frame_count+=game.dt
                 if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
                     this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animations[this.animation_frame].offset){
-                        this.offsetx=this.animations[this.animation_frame].offset.x
-                        this.offsety=this.animations[this.animation_frame].offset.y
-                    }else{this.offsetx=0;this.offsety=0}
                     this.anim_frame_count=0
                 }
                 this.frames-=game.dt
@@ -157,28 +149,26 @@ let chunli = {
         },
         "attack":{
             frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.3,
             animations:[
-                {image:"attack.png",duration:0.05},
-                {image:"attack.png",duration:0.2,damage:5,offset:{x:50,y:0},
-                    onhit:function(game,opponent){
-                        opponent.damage({damage:5,knockback:-200},game)
-                    }
-                },
-                {image:"attack.png",duration:0.05}
+                {image:"attack.png",duration:0.1,offset:{x:50,y:0}},
+                {image:"attack.png",duration:0.1,damage:5,offset:{x:50,y:0},stun:0.4,knockback:-100},
+                {image:"attack.png",duration:0.1,offset:{x:50,y:0}}
             ],
             offsetx:0,
             offsety:0,
-            update:function(self,game){
-                if(this.frames==0){
-                    if(self.is_grounded==true){
-                        self.vx=0
-                    }
-                    this.frames=0.3
-                    game.playsound("assets/strike.wav")
+            hitbox_data:{x:30,y:-30,w:80,h:40},
+            init:function(game,obj,self){
+                if(self.is_grounded==true){
+                    self.vx=0
                 }
+                game.playsound("assets/strike.wav")
+            },
+            update:function(self,game){
+                game.battle_engine.update_animation(game,this,self)
                 if(self.state_buffer!="none"&&self.state_buffer!="attack"){
                     let x = self.state_buffer
                     self.state=x
@@ -188,34 +178,8 @@ let chunli = {
                     this.animation_frame=0
                     return
                 }
-                this.hitbox.w = self.w*1.5;
-                this.hitbox.h = self.h;
-                this.hitbox.x = self.x+self.w*self.direction;
-                this.hitbox.y = self.y;
-                self.image=this.animations[this.animation_frame].image
-                this.anim_frame_count+=game.dt
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animations[this.animation_frame].damage){
-                        let opponent=game.match.get_opponent(self,game)
-                        if(game.physics.aabb(this.hitbox,opponent,game)){
-                            this.animations[this.animation_frame].onhit(game,opponent)
-                        }
-                    }
-                    if(this.animations[this.animation_frame].offset){
-                        this.offsetx=this.animations[this.animation_frame].offset.x
-                        this.offsety=this.animations[this.animation_frame].offset.y
-                    }else{this.offsetx=0;this.offsety=0}
-                    this.anim_frame_count=0
-                }
-                this.frames-=game.dt
-                if(this.frames<=0){
-                    this.frames=0
-                    this.anim_frame_count=0
-                    this.animation_frame=0
-                    self.state="idle"
-                }
-            }
+            },
+            end:function(game,obj,self){}
         },
         "special 1":{
             frames:0,
@@ -324,13 +288,14 @@ let chunli = {
         },
         "special 2":{
             frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:1.2,
             animations:[
                 {image:"special21.png",duration:0.1},
                 {image:"special21.png",duration:0.1,
-                    custom:function(self,game){
+                    custom:function(game,obj,self){
                         self.vx=0
                     }
                 },
@@ -338,7 +303,7 @@ let chunli = {
                 {image:"special21.png",duration:0.1},
                 {image:"special22.png",duration:0.1,damage:5,knockback:0},
                 {image:"special21.png",duration:0.1},
-                {image:"special23.png",duration:0.1,damage:5,knockback:0},
+                {image:"special23.png",duration:0.1,damage:5,knockback:0,stun:0.4},
                 {image:"special21.png",duration:0.1},
                 {image:"special21.png",duration:0.1},
                 {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true},
@@ -347,54 +312,31 @@ let chunli = {
             ],
             offsetx:0,
             offsety:0,
+            hitbox_data:{x:-10,y:-15,w:80,h:30},
+            init:function(game,obj,self){
+                self.vx=400*self.direction
+                game.playsound("assets/strike.wav")
+            },
             update:function(self,game){
-                if(this.frames==0){
-                    this.frames=1.2
-                    self.vx=400*self.direction
-                }
-                this.hitbox.w = self.w*1.5;
-                this.hitbox.h = self.h;
-                this.hitbox.x = self.x;
-                this.hitbox.y = self.y;
-                self.image=this.animations[this.animation_frame].image
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    let current = this.animations[this.animation_frame]
-                    if(current.custom){
-                        current.custom(self,game)
-                    }
-                    if(this.animations[this.animation_frame].damage){
-                        let opponent=game.match.get_opponent(self,game)
-                        if(game.physics.aabb(this.hitbox,opponent,game)){
-                            opponent.damage({
-                                damage:current.damage,
-                                knockback:current.knockback,
-                                knockdown:current.knockdown?current.knockdown:false,
-                            },game)
-                            game.hit_effect({frames:0.1,x:opponent.x,y:opponent.y+25*(this.animation_frame-2)})
-                        }
-                    }
-                    if(this.animations[this.animation_frame].offset){
-                        this.offsetx=this.animations[this.animation_frame].offset.x
-                        this.offsety=this.animations[this.animation_frame].offset.y
-                    }else{this.offsetx=0;this.offsety=0}
-                    this.anim_frame_count=0
-                }
-                this.anim_frame_count+=game.dt
-                this.frames-=game.dt
-                if(this.frames<=0){
+                game.battle_engine.update_animation(game,this,self)
+                if(self.state_buffer!="none"&&self.state_buffer!="attack"){
+                    let x = self.state_buffer
+                    self.state=x
+                    self.state_buffer="none"
                     this.frames=0
                     this.anim_frame_count=0
                     this.animation_frame=0
-                    self.state="idle"
+                    return
                 }
-            }
+            },
+            end:function(game,obj,self){}
         },
         "special 3":{
             frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:1.65,
             animations:[
                 {image:"special30.png",duration:0.1},
                 {image:"special31.png",duration:0.05},
@@ -414,58 +356,29 @@ let chunli = {
                 {image:"special39.png",duration:0.1},
                 {image:"special310.png",duration:0.1},
             ],
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:-30,y:-40,w:100,h:30},
+            init:function(game,obj,self){
+                self.vx=250*self.direction
+                game.playsound("assets/strike.wav")
+            },
             update:function(self,game){
-                if(this.frames==0){
-                    this.frames=1.65
-                    self.vx=250*self.direction
-                }
-                this.hitbox.x=self.x-self.w/2
-                this.hitbox.y=self.y
-                this.hitbox.w=self.w*2
-                this.hitbox.h=50
-                self.image=this.animations[this.animation_frame].image
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    let current = this.animations[this.animation_frame]
-                    if(current.custom){
-                        current.custom(self,game)
-                    }
-                    if(this.animations[this.animation_frame].damage){
-                        let opponent=game.match.get_opponent(self,game)
-                        if(game.physics.aabb(this.hitbox,opponent,game)){
-                            opponent.damage({
-                                damage:current.damage,
-                                knockback:current.knockback?current.knockback:0,
-                                knockdown:current.knockdown?current.knockdown:false,
-                            },game)
-                            game.hit_effect({frames:0.1,x:opponent.x,y:opponent.y+25*(this.animation_frame-2)})
-                        }
-                    }
-                    if(this.animations[this.animation_frame].offset){
-                        this.offsetx=this.animations[this.animation_frame].offset.x
-                        this.offsety=this.animations[this.animation_frame].offset.y
-                    }else{this.offsetx=0;this.offsety=0}
-                    this.anim_frame_count=0
-                }
-                this.anim_frame_count+=game.dt
-                this.frames-=game.dt
-                if(this.frames<=0||(self.frames>0&&self.is_grounded==true)){
-                    this.frames=0
-                    self.vx=0
-                    self.state="idle"
-                }
-            }
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){self.vx=0}
         },
         "ultimate":{
             frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
             total_frames:2.1,
             animations:[
                 {image:"special21.png",duration:0.2},
                 {image:"special22.png",duration:0.1,damage:5,
-                    custom:function(self,game){
+                    custom:function(game,obj,self){
+                        game.playsound("assets/strike.wav")
                         self.vx=0
                     }
                 },
@@ -474,14 +387,15 @@ let chunli = {
                 {image:"special21.png",duration:0.1},
                 {image:"special23.png",duration:0.1,damage:5},
                 {image:"special21.png",duration:0.1},
-                {image:"special22.png",duration:0.1,damage:5,knockback:-300},
+                {image:"special22.png",duration:0.1,damage:5,knockback:-300,stun:0.5},
                 {image:"special21.png",duration:0.2,
-                    custom:function(self,game){
+                    custom:function(game,obj,self){
                         self.vx=400*self.direction
                     }
                 },
                 {image:"special20.png",duration:0.1,damage:5,
-                    custom:function(self,game){
+                    custom:function(game,obj,self){
+                        game.playsound("assets/strike.wav")
                         self.vx=0
                     }},
                 {image:"special21.png",duration:0.1},
@@ -489,63 +403,31 @@ let chunli = {
                 {image:"special21.png",duration:0.1},
                 {image:"special22.png",duration:0.1,damage:5},
                 {image:"special21.png",duration:0.1},
-                {image:"special20.png",duration:0.1,damage:5,knockback:-300},
+                {image:"special20.png",duration:0.1,damage:5,knockback:-300,stun:0.5},
                 {image:"special21.png",duration:0.2,
-                    custom:function(self,game){
+                    custom:function(game,obj,self){
                         self.vx=400*self.direction
                     }
                 },
                 {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true,
-                    custom:function(self,game){
+                    custom:function(game,obj,self){
+                        game.playsound("assets/strike.wav")
                         self.vx=0
-                    }
+                    },stun:0.5
                 },
                 {image:"special24.png",duration:0.1},
             ],
             offsetx:0,
             offsety:0,
+            hitbox_data:{x:-30,y:-40,w:100,h:30},
+            init:function(game,obj,self){
+                self.vx=400*self.direction
+                game.playsound("assets/strike.wav")
+            },
             update:function(self,game){
-                if(this.frames==0){
-                    this.frames=this.total_frames
-                    self.vx=400*self.direction
-                }
-                this.hitbox.w = self.w*2;
-                this.hitbox.h = self.h;
-                this.hitbox.x = self.x;
-                this.hitbox.y = self.y;
-                self.image=this.animations[this.animation_frame].image
-                this.anim_frame_count+=game.dt
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    let current = this.animations[this.animation_frame]
-                    if(current.custom){
-                        current.custom(self,game)
-                    }
-                    if(this.animations[this.animation_frame].damage){
-                        let opponent=game.match.get_opponent(self,game)
-                        if(game.physics.aabb(this.hitbox,opponent,game)){
-                            opponent.damage({
-                                damage:current.damage,
-                                knockback:current.knockback,
-                                knockdown:current.knockdown?current.knockdown:false,
-                            },game)
-                            game.hit_effect({frames:0.1,x:opponent.x,y:opponent.y+25*(this.animation_frame-2)})
-                        }
-                    }
-                    if(this.animations[this.animation_frame].offset){
-                        this.offsetx=this.animations[this.animation_frame].offset.x
-                        this.offsety=this.animations[this.animation_frame].offset.y
-                    }else{this.offsetx=0;this.offsety=0}
-                    this.anim_frame_count=0
-                }
-                this.frames-=game.dt
-                if(this.frames<=0){
-                    this.frames=0
-                    this.anim_frame_count=0
-                    this.animation_frame=0
-                    self.state="idle"
-                }
-            }
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){self.vx=0}
         },
         "jump attack":{
             frames:0,
@@ -563,6 +445,7 @@ let chunli = {
                                 damage:5,
                                 knockback:0,
                                 knockdown:false,
+                                stun:0.2
                             },game)
                             self.vy=-700
                         }
@@ -576,6 +459,7 @@ let chunli = {
                                 damage:5,
                                 knockback:0,
                                 knockdown:false,
+                                stun:0.2
                             },game)
                             self.vy=-700
                         }
@@ -585,7 +469,7 @@ let chunli = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:0,y:87,w:50,h:20},
+            hitbox_data:{x:-20,y:40,w:40,h:30},
             init:function(game,obj,self){
                 game.playsound("assets/strike.wav")
             },

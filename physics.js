@@ -24,6 +24,9 @@ let physics = {
     collide_and_eject:function(actor1,actor2,game){
         let a1 = actor1
         let a2 = actor2
+        if(!a1.enable_physics||!a2.enable_physics){
+            return
+        }
         /*if(this.aabb(a1,a2,game)){
             a1.x+=(a1.vx-100)*game.dt*-a1.direction
             a2.x+=a1.vx*game.dt*-a2.direction

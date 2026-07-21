@@ -15,6 +15,10 @@ let player = {
     enable_physics:true,
     update:function(game){
         if(this.health<=0){
+            if(game.match.format=="practice"){
+                this.health=100
+                return
+            }
             this.state="ko"
             this.states[this.state].update(this,game)
             return
@@ -99,7 +103,7 @@ let player = {
     },
 
     set_state:function(state){
-        if(this.state=="idle"||this.state=="block"){
+        if(this.state=="idle"){
             this.state=state
         }else{
             this.state_buffer=state
@@ -147,11 +151,15 @@ let player = {
             }else{
                 game.playsound("assets/hit.wav")
                 this.state="hit"
+                this.states["hit"].total_frames=data.stun
+                this.states["hit"].frames=0
             }
+            game.freeze_frame(0.2)
         }
         if(this.state=="block"){
             damage=damage/4
             velx=velx/2
+            game.freeze_frame(0.2)
         }
         this.health-=damage
         this.set_velocity({vx:velx,vy:0,duration:0.2})
@@ -195,10 +203,11 @@ let player = {
         },
         "hit":{
             frames:0,
+            total_frames:0.2,
             update:function(self,game){
                 if(this.frames==0){
                     self.image="hit.png"
-                    this.frames=0.2
+                    this.frames=this.total_frames
                     //self.vx=100*-self.direction
                 }
                 this.frames-=game.dt
@@ -213,6 +222,11 @@ let player = {
             update:function(self,game){
                 self.vx=0
                 self.image="block.png"
+                if(self.state_buffer!="none"){
+                    let x = self.state_buffer
+                    self.state=x
+                    self.state_buffer="none"
+                }
             }
         },
         "block stun":{
@@ -274,7 +288,7 @@ let player = {
                 this.frames-=game.dt
                 let opponent=game.match.get_opponent(self,game)
                 if(game.physics.aabb(this.hitbox,opponent,game)){
-                    if(opponent.state=="idle"||opponent.state=="block"){
+                    if(opponent.state!="knockdown"){
                         game.playsound("assets/grab.wav")
                         self.state="throwing"
                         opponent.state="being thrown"

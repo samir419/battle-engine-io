@@ -89,37 +89,36 @@ let vice = {
         },
         "back dash":{
             frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.7,
+            temps:{},
             animations:[
-                {image:"jump.png",duration:0.25}
+                {image:"backdash0.png",duration:0.1},
+                {image:"backdash1.png",duration:0.1},
+                {image:"backdash2.png",duration:0.1},
+                {image:"backdash3.png",duration:0.1},
+                {image:"backdash4.png",duration:0.1},
+                 {image:"backdash5.png",duration:0.1},
+                 {image:"backdash6.png",duration:0.1},
             ],
             offsetx:0,
             offsety:0,
+            hitbox_data:{x:40,y:-15,w:50,h:120},
+            init:function(game,obj,self){
+                self.enable_physics=false
+                this.temps.func=self.hit
+                this.temps.direction=-self.direction
+                self.hit=function(){}
+            },
             update:function(self,game){
-                if(this.frames==0){
-                    this.frames=0.25//1 second
-                    self.vx=300*-self.direction
-                }
-                self.image=this.animations[this.animation_frame].image
-                this.anim_frame_count+=game.dt
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animations[this.animation_frame].offset){
-                        this.offsetx=this.animations[this.animation_frame].offset.x
-                        this.offsety=this.animations[this.animation_frame].offset.y
-                    }else{this.offsetx=0;this.offsety=0}
-                    this.anim_frame_count=0
-                }
-                this.frames-=game.dt
-                if(this.frames<=0){
-                    self.vx=0
-                    this.frames=0
-                    this.anim_frame_count=0
-                    this.animation_frame=0
-                    self.state="idle"
-                }
+                game.battle_engine.update_animation(game,this,self)
+                self.x+=150*this.temps.direction*game.dt
+            },
+            end:function(game,obj,self){
+                self.enable_physics=true
+                self.hit=this.temps.func
             }
         },
         "attack":{
@@ -135,7 +134,7 @@ let vice = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:-15,w:50,h:120},
+            hitbox_data:{x:0,y:-40,w:60,h:30},
             init:function(game,obj,self){
                 game.playsound("assets/strike.wav")
             },
@@ -153,14 +152,14 @@ let vice = {
             animations:[
                 {image:"jumpattack.png",duration:0.1},
                 {image:"jumpattack.png",duration:0.1,damage:3},
-                {image:"jumpattack.png",duration:0.1,damage:3},
-                {image:"jumpattack.png",duration:0.1,damage:3},
-                {image:"jumpattack.png",duration:0.1,damage:3},
+                {image:"jumpattack.png",duration:0.1,damage:3,stun:0.5},
+                {image:"jumpattack.png",duration:0.1,damage:3,stun:0.5},
+                {image:"jumpattack.png",duration:0.1,damage:3,stun:0.5},
                 {image:"jumpattack.png",duration:0.1}
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:30,y:0,w:59,h:103},
+            hitbox_data:{x:10,y:-20,w:60,h:50},
             init:function(game,obj,self){},
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
@@ -333,56 +332,29 @@ let vice = {
         },
         "special 3":{
             frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.5,
+            temps:{},
             animations:[
                 {image:"special30.png",duration:0.1},
-                {image:"special31.png",duration:0.4,damage:15}
+                {image:"special31.png",duration:0.1,damage:15,knockdown:true,
+                    custom:function(game,obj,self){self.vx=400*self.direction}
+                },
+                {image:"special31.png",duration:0.1,damage:15,knockdown:true},
+                {image:"special31.png",duration:0.1,damage:15,knockdown:true},
+                {image:"special31.png",duration:0.1,damage:15,knockdown:true}
             ],
             offsetx:0,
             offsety:0,
+            hitbox_data:{x:-40,y:-20,w:80,h:60},
+            init:function(game,obj,self){},
             update:function(self,game){
-                if(this.frames==0){
-                    this.frames=0.5//1 second
-                }
-                this.hitbox.w = self.w;
-                this.hitbox.h = self.h;
-                this.hitbox.x = self.x+50*self.direction;
-                this.hitbox.y = self.y;
-                self.image=this.animations[this.animation_frame].image
-                this.anim_frame_count+=game.dt
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animation_frame==1){
-                        self.vx=400*self.direction
-                    }
-                   
-                    if(this.animations[this.animation_frame].offset){
-                        this.offsetx=this.animations[this.animation_frame].offset.x
-                        this.offsety=this.animations[this.animation_frame].offset.y
-                    }else{this.offsetx=0;this.offsety=0}
-                    this.anim_frame_count=0
-                }
-                if(this.animations[this.animation_frame].damage){
-                    let opponent=game.match.get_opponent(self,game)
-                    if(game.physics.aabb(this.hitbox,opponent,game)){
-                        opponent.hit(this.animations[this.animation_frame].damage,self,game)
-                        self.vx=0
-                        this.frames=0
-                        this.anim_frame_count=0
-                        this.animation_frame=0
-                        self.state="idle"
-                    }
-                }
-                this.frames-=game.dt
-                if(this.frames<=0){
-                    self.vx=0
-                    this.frames=0
-                    this.anim_frame_count=0
-                    this.animation_frame=0
-                    self.state="idle"
-                }
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){
+                self.vx=0
             }
         },
         "ultimate":{

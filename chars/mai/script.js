@@ -24,7 +24,7 @@ let mai = {
             },
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
-                if(self.state_buffer=="special 1"){
+                if(self.state_buffer=="special 3"){
                     self.state="jump special"
                     self.state_buffer="none"
                     this.anim_frame_count=0
@@ -148,7 +148,7 @@ let mai = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:-15,w:50,h:120},
+            hitbox_data:{x:0,y:-40,w:60,h:30},
             init:function(game,obj,self){
                 game.playsound("assets/strike.wav")
             },
@@ -252,7 +252,7 @@ let mai = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:20,w:100,h:30},
+            hitbox_data:{x:0,y:-20,w:100,h:30},
             init:function(game,obj,self){},
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
@@ -273,7 +273,7 @@ let mai = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:-15,w:50,h:120},
+            hitbox_data:{x:0,y:-45,w:90,h:120},
             init:function(game,obj,self){
                 self.vx=200*self.direction
                 self.vy=-700
@@ -305,7 +305,7 @@ let mai = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:-25,y:-200,w:58+75,h:97*3},
+            hitbox_data:{x:-50,y:-200,w:58+75,h:97*3},
             init:function(game,obj,self){self.vx=0},
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
@@ -326,7 +326,7 @@ let mai = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:-15,w:50,h:120},
+            hitbox_data:{x:40,y:20,w:80,h:60},
             init:function(game,obj,self){
                 self.set_velocity({vx:200*self.direction,vy:200,duration:0.3})
             },
@@ -375,7 +375,7 @@ let mai = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:0,y:87,w:50,h:20},
+            hitbox_data:{x:-25,y:40,w:50,h:20},
             init:function(game,obj,self){
                 game.playsound("assets/strike.wav")
             },
