@@ -4,6 +4,7 @@ let match = {
     ai_enabled:false,
     ai_routine:0,
     temps:{},
+    difficulty:1,
     update:function(game){
         if(this.state=="pause") return
         for(let i=0;i<this.actors.length;i++){
@@ -115,7 +116,7 @@ let match = {
         let states = ["jump","dash","back dash","attack","block","idle","special 1","special 2","special 3","throw"]
         this.ai_routine += game.dt
 
-        if(this.ai_routine>=1){
+        if(this.ai_routine>=1/this.difficulty){
             p2.set_state(states[Math.floor(Math.random()*states.length)])
             if(p2.meter>=60){
                 p2.handle_input("ultimate", game)

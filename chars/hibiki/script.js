@@ -117,7 +117,7 @@ let hibiki = {
             total_frames:0.3,
             animations:[
                 {image:"attack.png",duration:0.1,offset:{x:25,y:0}},
-                {image:"attack.png",duration:0.1,damage:5,knockback:-100,offset:{x:25,y:0},stun:0.4},
+                {image:"attack.png",duration:0.1,damage:5,knockback:-100,offset:{x:25,y:0},stun:0.3},
                 {image:"attack.png",duration:0.1,offset:{x:25,y:0}}
             ],
             offsetx:0,
@@ -139,90 +139,55 @@ let hibiki = {
         },
         "special 1":{
             frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.6,
             animations:[
                 {image:"special10.png",duration:0.2},
-                {image:"special11.png",duration:0.2,damage:true,offset:{x:50,y:-25}},
+                {image:"special11.png",duration:0.2,damage:15,knockdown:true,offset:{x:50,y:-25}},
                 {image:"special10.png",duration:0.2},
             ],
             offsetx:0,
             offsety:0,
-            update:function(self,game){
-                if(this.frames==0){
-                    if(self.is_grounded==true){
-                        self.vx=0
-                    }
-                    this.frames=0.6
-                }
-                this.hitbox.x=self.x+self.w*self.direction
-                this.hitbox.y=self.y-33
-                this.hitbox.w=100
-                this.hitbox.h=self.h
-                self.image=this.animations[this.animation_frame].image
-                this.anim_frame_count+=game.dt
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animations[this.animation_frame].damage){
-                        let opponent=game.match.get_opponent(self,game)
-                        if(game.physics.aabb(this.hitbox,opponent,game)){
-                            opponent.hit(10,self,game)
-                        }
-                    }
-                    if(this.animations[this.animation_frame].offset){
-                        this.offsetx=this.animations[this.animation_frame].offset.x
-                        this.offsety=this.animations[this.animation_frame].offset.y
-                    }else{this.offsetx=0;this.offsety=0}
-                    this.anim_frame_count=0
-                }
-                this.frames-=game.dt
-                if(this.frames<=0){
+            hitbox_data:{x:40,y:-60,w:80,h:80},
+            init:function(game,obj,self){
+                if(self.is_grounded==true){
                     self.vx=0
-                    self.vy=0
-                    this.animation_frame=0
-                    this.anim_frame_count=0
-                    this.frames=0
-                    self.state="idle"
                 }
+                game.playsound("assets/strike.wav")
+            },
+            update:function(self,game){
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){
+                self.vx=0
+                self.vy=0
             }
         },
         "special 2":{
             frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.4,
             animations:[
                 {image:"special2.png",duration:0.2},
-                {image:"special2.png",duration:0.2,damage:5},
+                {image:"special2.png",duration:0.1,damage:10,knockdown:true},
+                {image:"special2.png",duration:0.1,damage:10,knockdown:true},
             ],
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:0,y:0,w:80,h:20},
+            init:function(game,obj,self){
+                self.vx=400*self.direction
+                game.playsound("assets/strike.wav")
+            },
             update:function(self,game){
-                if(this.frames==0){
-                    this.frames=0.4
-                    self.vx=400*self.direction
-                }
-                this.hitbox.x=self.x+self.w*self.direction
-                this.hitbox.y=self.y+self.h/4
-                this.hitbox.w=66
-                this.hitbox.h=self.h/2
-                self.image=this.animations[this.animation_frame].image
-                this.anim_frame_count+=game.dt
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    if(this.animations[this.animation_frame].damage){
-                        let opponent=game.match.get_opponent(self,game)
-                        if(game.physics.aabb(this.hitbox,opponent,game)){
-                            opponent.hit(this.animations[this.animation_frame].damage,self,game)
-                        }
-                    }
-                    this.anim_frame_count=0
-                }
-                this.frames-=game.dt
-                if(this.frames<=0||(self.frames>0&&self.is_grounded==true)){
-                    this.frames=0
-                    self.vx=0
-                    self.state="idle"
-                }
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){
+                self.vx=0
             }
         },
         "special 3":{
@@ -240,7 +205,7 @@ let hibiki = {
                     this.temps.func=self.hit
                     self.hit=function(){}
                     self.vx=0
-                    this.frames=0.4
+                    this.frames=0.7
                 }
                 self.image=this.animations[this.animation_frame].image
                 this.anim_frame_count+=game.dt
@@ -299,29 +264,33 @@ let hibiki = {
         },
         "jump attack":{
             frames:0,
+            animation_frame:0,
+            anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
-            update:function(self,game){
-                if(this.frames==0){
-                    self.image="jumpattack.png"
-                    this.frames=0.4
-                }
-                this.hitbox.x=self.x+20*self.direction
-                this.hitbox.y=self.y+self.h
-                this.hitbox.w=30
-                this.hitbox.h=self.h/4
-                this.frames-=game.dt
-                let opponent=game.match.get_opponent(self,game)
-                if(game.physics.aabb(this.hitbox,opponent,game)){
-                    opponent.hit(5,self,game)
-                }
-                if(this.frames<=0||self.is_grounded==true){
+            total_frames:0.4,
+            animations:[
+                {image:"jumpattack.png",duration:0.1},
+                {image:"jumpattack.png",duration:0.1,damage:2,stun:0.5},
+                {image:"jumpattack.png",duration:0.1,damage:2,stun:0.5},
+                {image:"jumpattack.png",duration:0.1,damage:2,stun:0.5},
+            ],
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:0,y:40,w:30,h:20},
+            init:function(game,obj,self){
+                if(self.is_grounded==true){
                     self.vx=0
-                    self.vy=0
-                    this.frames=0
-                    self.state="idle"
                 }
+                game.playsound("assets/strike.wav")
+            },
+            update:function(self,game){
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){
+                self.vx=0
+                self.vy=0
             }
-        }
+        },
     }
 }
 

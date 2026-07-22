@@ -143,6 +143,7 @@ game.event=(data)=>{
             let p1 = chosen_player
             let p2 = game.chars[Math.floor(Math.random()*game.chars.length)]
             game.match.create_match([p1,p2])
+            game.match.difficulty++
         }
     }
 }

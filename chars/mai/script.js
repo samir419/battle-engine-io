@@ -72,15 +72,17 @@ let mai = {
             offsety:0,
             hitbox_data:{x:40,y:-15,w:50,h:120},
             init:function(game,obj,self){
-                self.vx=250*self.direction
+                self.enable_physics=false
                 this.temps.func=self.hit
+                this.temps.direction=self.direction
                 self.hit=function(){}
             },
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
+                self.x+=250*this.temps.direction*game.dt
             },
             end:function(game,obj,self){
-                self.vx=0
+                self.enable_physics=true
                 self.hit=this.temps.func
             }
         },

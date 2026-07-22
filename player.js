@@ -60,32 +60,31 @@ let player = {
     render:function(game){
         let ctx = game.ctx
         let canvas = game.canvas
-        let actor = this
         if(game.match.format=="practice"){
             ctx.strokeStyle="green"
-            ctx.strokeRect(actor.x,actor.y,actor.w,actor.h)
-            if(actor.states[actor.state].hitbox){
-                let hitbox = actor.states[actor.state].hitbox
+            ctx.strokeRect(this.x,this.y,this.w,this.h)
+            if(this.states[this.state].hitbox){
+                let hitbox = this.states[this.state].hitbox
                 ctx.strokeStyle="red"
                 ctx.strokeRect(hitbox.x,hitbox.y,hitbox.w,hitbox.h)
             }
         }
        
         let img = new Image()
-        img.src=actor.path+this.image
+        img.src=this.path+this.image
         ctx.save();
-        if (actor.direction === -1) {
-            ctx.translate(actor.x + actor.w, actor.y);
+        if (this.direction === -1) {
+            ctx.translate(this.x + this.w, this.y);
             ctx.scale(-1, 1);
-            ctx.drawImage(img, ((this.w/2)-img.width/2)+this.get_offset('x')*this.direction, ((this.h/2)-img.height/2)+this.get_offset('y'));
+            ctx.drawImage(img, ((this.w/2)-img.width/2)+this.get_offset('x'), ((this.h/2)-img.height/2)+this.get_offset('y'));
         } else {
-            ctx.translate(actor.x, actor.y);
-            ctx.drawImage(img, ((this.w/2)-img.width/2)+this.get_offset('x')*this.direction, ((this.h/2)-img.height/2)+this.get_offset('y'));
+            ctx.translate(this.x, this.y);
+            ctx.drawImage(img, ((this.w/2)-img.width/2)+this.get_offset('x'), ((this.h/2)-img.height/2)+this.get_offset('y'));
         }
         ctx.restore(); 
-        for(let i=0;i<actor.objects.length;i++){
-            let obj = actor.objects[i]
-            obj.render(actor,game)
+        for(let i=0;i<this.objects.length;i++){
+            let obj = this.objects[i]
+            obj.render(this,game)
         }
     },
 
@@ -142,6 +141,10 @@ let player = {
     damage:function(data,game){
         let damage = data.damage
         let velx = data.knockback? data.knockback:0
+        if(this.state=="knockdown"){
+            damage=0
+            velx=0
+        }
         if (!["block","block stun","knockdown","ko"].includes(this.state)){
             this.enable_physics=true
             game.hit_effect({frames:0.1,x:this.x,y:this.y})
@@ -157,8 +160,10 @@ let player = {
             game.freeze_frame(0.2)
         }
         if(this.state=="block"){
+            game.playsound("assets/blockhit.wav")
             damage=damage/4
             velx=velx/2
+            this.block_stun(data.stun/2)
             game.freeze_frame(0.2)
         }
         this.health-=damage
@@ -208,6 +213,7 @@ let player = {
                 if(this.frames==0){
                     self.image="hit.png"
                     this.frames=this.total_frames
+                    self.vx=0
                     //self.vx=100*-self.direction
                 }
                 this.frames-=game.dt
@@ -233,9 +239,6 @@ let player = {
             update:function(self,game){
                 self.temp.block_stun_time-=game.dt
                 self.image="block.png"
-                if(!game.match.check_boundary(self,game)){
-                    self.x+=-100*self.direction*game.dt
-                }
                 if(self.temp.block_stun_time<=0){
                     self.temp.block_stun_time=0
                     self.state="block"
