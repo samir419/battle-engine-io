@@ -116,6 +116,7 @@ let karin = {
             anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
             total_frames:0.3,
+            combo_counter:0,
             animations:[
                 {image:"attack.png",duration:0.1},
                 {image:"attack.png",duration:0.1,damage:5,knockback:-50,stun:0.4},
@@ -123,7 +124,7 @@ let karin = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:15,w:55,h:30},
+            hitbox_data:{x:10,y:-15,w:55,h:30},
             init:function(game,obj,self){
                 self.vx=0
                 game.playsound("assets/strike.wav")
@@ -133,8 +134,12 @@ let karin = {
             },
             end:function(game,obj,self){
                 if(self.state_buffer=="attack"){
-                    self.state="special 1 rekke2"
                     self.state_buffer="none"
+                    this.combo_counter++
+                    if(this.combo_counter==2){
+                        self.state="special 1 rekke2"
+                        this.combo_counter=0
+                    }else{self.state="attack"}
                 }
             }
         },
@@ -152,7 +157,7 @@ let karin = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:15,w:55,h:30},
+            hitbox_data:{x:10,y:-15,w:55,h:30},
             init:function(game,obj,self){
                 self.vx=200*self.direction
                 game.playsound("assets/strike.wav")
@@ -182,7 +187,7 @@ let karin = {
             ],
             offsetx:0,
             offsety:0,
-             hitbox_data:{x:40,y:15,w:55,h:30},
+             hitbox_data:{x:10,y:-15,w:55,h:30},
             init:function(game,obj,self){
                 self.vx=200*self.direction
                 game.playsound("assets/strike.wav")
@@ -212,7 +217,7 @@ let karin = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:15,w:55,h:30},
+            hitbox_data:{x:10,y:-15,w:55,h:30},
             init:function(game,obj,self){
                 self.vx=200*self.direction
                 game.playsound("assets/strike.wav")
@@ -244,7 +249,7 @@ let karin = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:0,w:80,h:80},
+            hitbox_data:{x:10,y:-35,w:60,h:60},
             init:function(game,obj,self){
                 self.vx=300*self.direction
                 self.vy=-500
@@ -319,7 +324,7 @@ let karin = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:15,w:55,h:30},
+            hitbox_data:{x:40,y:-15,w:60,h:30},
             init:function(game,obj,self){
                 self.vx=200*self.direction
                 game.playsound("assets/strike.wav")
@@ -344,7 +349,7 @@ let karin = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:-20,y:40,w:140,h:40},
+            hitbox_data:{x:-40,y:0,w:140,h:40},
             init:function(game,obj,self){
                 game.playsound("assets/strike.wav")
             },
@@ -385,7 +390,7 @@ let karin = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:50,w:80+50,h:30},
+            hitbox_data:{x:10,y:0,w:80+50,h:30},
             init:function(game,obj,self){
                 self.vx=0
                 game.playsound("assets/strike.wav")

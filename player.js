@@ -91,10 +91,8 @@ let player = {
     handle_input:function(inp,game){
         if(inp=="ultimate"){
             if(this.meter>=60){
-                game.freeze_frame(0.4)
                 this.meter-=60
                 this.set_state(inp)
-                game.playsound("assets/meterup.wav")
             }
             return
         }

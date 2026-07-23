@@ -55,6 +55,7 @@ let physics = {
     aabb:function(actor1,actor2,game){
         // simple AABB overlap test
         if (!actor1 || !actor2) return false
+        if(actor2.enable_physics==false)return false
         return !(actor1.x + actor1.w <= actor2.x ||
                  actor1.x >= actor2.x + actor2.w ||
                  actor1.y + actor1.h <= actor2.y ||

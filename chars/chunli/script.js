@@ -319,15 +319,6 @@ let chunli = {
             },
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
-                if(self.state_buffer!="none"&&self.state_buffer!="attack"){
-                    let x = self.state_buffer
-                    self.state=x
-                    self.state_buffer="none"
-                    this.frames=0
-                    this.anim_frame_count=0
-                    this.animation_frame=0
-                    return
-                }
             },
             end:function(game,obj,self){}
         },
@@ -360,10 +351,10 @@ let chunli = {
             offsety:0,
             hitbox_data:{x:-30,y:-40,w:100,h:30},
             init:function(game,obj,self){
-                self.vx=250*self.direction
                 game.playsound("assets/strike.wav")
             },
             update:function(self,game){
+                self.vx=250*self.direction
                 game.battle_engine.update_animation(game,this,self)
             },
             end:function(game,obj,self){self.vx=0}

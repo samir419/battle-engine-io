@@ -129,7 +129,7 @@ let vice = {
             total_frames:0.3,
             animations:[
                 {image:"attack.png",duration:0.1},
-                {image:"attack.png",duration:0.1,damage:5,knockback:-100},
+                {image:"attack.png",duration:0.1,damage:5,knockback:-100,stun:0.4},
                 {image:"attack.png",duration:0.1}
             ],
             offsetx:0,

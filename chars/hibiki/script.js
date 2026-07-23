@@ -115,9 +115,10 @@ let hibiki = {
             anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
             total_frames:0.3,
+            combo_counter:0,
             animations:[
                 {image:"attack.png",duration:0.1,offset:{x:25,y:0}},
-                {image:"attack.png",duration:0.1,damage:5,knockback:-100,offset:{x:25,y:0},stun:0.3},
+                {image:"attack.png",duration:0.1,damage:5,knockback:-100,offset:{x:25,y:0},stun:0.4},
                 {image:"attack.png",duration:0.1,offset:{x:25,y:0}}
             ],
             offsetx:0,
@@ -135,6 +136,14 @@ let hibiki = {
             end:function(game,obj,self){
                 self.vx=0
                 self.vy=0
+                if(self.state_buffer=="attack"){
+                    self.state_buffer="none"
+                    this.combo_counter++
+                    if(this.combo_counter==2){
+                        self.state="special 1"
+                        this.combo_counter=0
+                    }else{self.state="attack"}
+                }
             }
         },
         "special 1":{
@@ -180,10 +189,10 @@ let hibiki = {
             offsety:0,
             hitbox_data:{x:0,y:0,w:80,h:20},
             init:function(game,obj,self){
-                self.vx=400*self.direction
                 game.playsound("assets/strike.wav")
             },
             update:function(self,game){
+                self.vx=400*self.direction
                 game.battle_engine.update_animation(game,this,self)
             },
             end:function(game,obj,self){

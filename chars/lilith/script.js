@@ -31,6 +31,14 @@ let lilith = {
                     this.frames=0
                     return
                 }
+                if(self.state_buffer=="special 1"){
+                    self.state="special 1"
+                    self.state_buffer="none"
+                    this.anim_frame_count=0
+                    this.animation_frame=0
+                    this.frames=0
+                    return
+                }
                 if(self.is_grounded==true){
                     self.state="idle"
                     this.anim_frame_count=0
@@ -269,7 +277,14 @@ let lilith = {
             ],
             offsetx:0,offsety:0,
             hitbox_data:{x:-40,y:-50,w:120,h:30},
-            init:function(game,obj,self){},
+            init:function(game,obj,self){
+                if(self.is_grounded==false){
+                    self.state="idle"
+                    obj.frames=0
+                    obj.anim_frame_count=0
+                    obj.animation_frame=0
+                }
+            },
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
             },
@@ -295,7 +310,7 @@ let lilith = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:-25,y:-25,w:58+75,h:97+75},
+            hitbox_data:{x:-60,y:-40,w:120,h:130},
             init:function(game,obj,self){
                 self.enable_physics=false
             },

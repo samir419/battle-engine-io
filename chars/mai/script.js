@@ -143,21 +143,32 @@ let mai = {
             anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
             total_frames:0.3,
+            combo_counter:0,
             animations:[
                 {image:"attack.png",duration:0.1},
-                {image:"attack.png",duration:0.1,damage:5,knockback:-100},
+                {image:"attack.png",duration:0.1,damage:5,knockback:-100,stun:0.4},
                 {image:"attack.png",duration:0.1}
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:0,y:-40,w:60,h:30},
+            hitbox_data:{x:10,y:-50,w:60,h:30},
             init:function(game,obj,self){
                 game.playsound("assets/strike.wav")
             },
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
             },
-            end:function(game,obj,self){}
+            end:function(game,obj,self){
+                self.vx=0
+                if(self.state_buffer=="attack"){
+                    self.state_buffer="none"
+                    this.combo_counter++
+                    if(this.combo_counter==2){
+                        self.state="special 2"
+                        this.combo_counter=0
+                    }else{self.state="attack"}
+                }
+            }
         },
         "special 1":{
             frames:0,
@@ -275,7 +286,7 @@ let mai = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:0,y:-45,w:90,h:120},
+            hitbox_data:{x:0,y:-45,w:90,h:65},
             init:function(game,obj,self){
                 self.vx=200*self.direction
                 self.vy=-700
@@ -328,7 +339,7 @@ let mai = {
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:40,y:20,w:80,h:60},
+            hitbox_data:{x:0,y:0,w:80,h:60},
             init:function(game,obj,self){
                 self.set_velocity({vx:200*self.direction,vy:200,duration:0.3})
             },
@@ -355,6 +366,7 @@ let mai = {
                                 damage:5,
                                 knockback:0,
                                 knockdown:false,
+                                stun:0.6,
                             },game)
                             self.vy=-700
                         }
@@ -368,6 +380,7 @@ let mai = {
                                 damage:5,
                                 knockback:0,
                                 knockdown:false,
+                                stun:0.6
                             },game)
                             self.vy=-700
                         }

@@ -15,6 +15,10 @@ let battle_engine={
         if(obj.frames==0){
             obj.frames=obj.total_frames
             obj.init(game,obj,self)
+            if(self.state=="ultimate"){
+                game.playsound("assets/meterup.wav")
+                game.freeze_frame(0.4)
+            }
         }
         let difference
         if(self.direction==-1){
