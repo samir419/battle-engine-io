@@ -107,7 +107,7 @@ let mai = {
             },
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
-                if(self.state_buffer=="special 1"){
+                if(self.state_buffer=="special 3"){
                     self.state="jump special"
                     self.state_buffer="none"
                     this.anim_frame_count=0

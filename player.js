@@ -13,6 +13,7 @@ let player = {
     state_buffer:"none",
     objects:[],
     enable_physics:true,
+    hit_max:0,
     update:function(game){
         if(this.health<=0){
             if(game.match.format=="practice"){
@@ -102,6 +103,7 @@ let player = {
     set_state:function(state){
         if(this.state=="idle"){
             this.state=state
+            this.hit_max=0
         }else{
             this.state_buffer=state
         }
@@ -212,6 +214,10 @@ let player = {
                     self.image="hit.png"
                     this.frames=this.total_frames
                     self.vx=0
+                    self.hit_max+=1
+                    if(self.hit_max>10){
+                        self.knockdown()
+                    }
                     //self.vx=100*-self.direction
                 }
                 this.frames-=game.dt
@@ -237,6 +243,9 @@ let player = {
             update:function(self,game){
                 self.temp.block_stun_time-=game.dt
                 self.image="block.png"
+                if(self.x+self.w>game.canvas.width&&self.x<0){
+                    self.x+=50*-self.direction*game.dt
+                }
                 if(self.temp.block_stun_time<=0){
                     self.temp.block_stun_time=0
                     self.state="block"
@@ -255,8 +264,7 @@ let player = {
                     self.vx=100*-self.direction
                     self.vy=-400
                     self.is_grounded=false
-                    this.temps.h=self.h
-                    self.h=self.h/2
+                    self.hit_max=0
                 }
                 this.frames-=game.dt
                 if(this.frames<=0.5){
@@ -268,7 +276,6 @@ let player = {
                 }
                 if(this.frames<=0){
                     this.temps.ct=0
-                    self.h = this.temps.h
                     this.frames=0
                     self.state="idle"
                 }
@@ -293,6 +300,8 @@ let player = {
                         game.playsound("assets/grab.wav")
                         self.state="throwing"
                         opponent.state="being thrown"
+                        opponent.x=self.x+(self.w/2)*self.direction
+                        opponent.y=self.y
                         self.states["throwing"]={
                             frames:0,
                             offsetx:0,
@@ -303,6 +312,7 @@ let player = {
                                     self.image="idle.png"
                                     this.frames=0.6
                                     self.vy=-600
+                                    self.vx=0
                                     self.is_grounded=false
                                 }
                                 this.frames-=game.dt
@@ -319,9 +329,10 @@ let player = {
                             temps:{},
                             update:function(self,game){
                                 if(this.frames==0){
-                                    self.image="idle.png"
+                                    self.image="hit.png"
                                     this.frames=0.6
                                     self.vy=-600
+                                    self.vx=0
                                     self.is_grounded=false
                                 }
                                 this.frames-=game.dt

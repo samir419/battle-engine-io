@@ -190,9 +190,9 @@ let hibiki = {
             hitbox_data:{x:0,y:0,w:80,h:20},
             init:function(game,obj,self){
                 game.playsound("assets/strike.wav")
+                self.vx=400*self.direction
             },
             update:function(self,game){
-                self.vx=400*self.direction
                 game.battle_engine.update_animation(game,this,self)
             },
             end:function(game,obj,self){
@@ -201,46 +201,37 @@ let hibiki = {
         },
         "special 3":{
             frames:0,
-            hitbox:{x:0,y:0,w:0,h:0},
             animation_frame:0,
             anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.6,
             animations:[
-                {image:"special3.png",duration:0.1}],
+                {image:"special3.png",duration:0.2},
+            ],
             offsetx:0,
             offsety:0,
-            temps:{},
+            hitbox_data:{x:30,y:0,w:59,h:103},
+            init:function(game,obj,self){
+                self.enable_physics=false
+                self.vx=0
+                self.vy=0
+                game.playsound("assets/strike.wav")
+            },
             update:function(self,game){
-                if(this.frames==0){
-                    this.temps.func=self.hit
-                    self.hit=function(){}
-                    self.vx=0
-                    this.frames=0.7
-                }
-                self.image=this.animations[this.animation_frame].image
-                this.anim_frame_count+=game.dt
-                if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
-                    this.animation_frame=(this.animation_frame+1)%this.animations.length
-                    this.anim_frame_count=0
-                }
+                game.battle_engine.update_animation(game,this,self)
                 if(self.state_buffer!="none"){
                     let x = self.state_buffer
                     self.state=x
                     self.state_buffer="none"
-                    self.hit=this.temps.func
+                    self.enable_physics=true
                     this.frames=0
                     this.anim_frame_count=0
                     this.animation_frame=0
                     return
                 }
-                this.frames-=game.dt
-                if(this.frames<=0){
-                    self.hit=this.temps.func
-                    this.frames=0
-                    this.anim_frame_count=0
-                    this.animation_frame=0
-                    self.state="idle"
-                }
-            
+            },
+            end:function(game,obj,self){
+                self.enable_physics=true
             }
         },
         "ultimate":{
@@ -264,9 +255,8 @@ let hibiki = {
             offsetx:0,
             offsety:0,
             hitbox_data:{x:30,y:0,w:59,h:103},
-            init:function(game,obj,self){self.vx=300},
+            init:function(game,obj,self){self.vx=300*self.direction},
             update:function(self,game){
-                self.vx=300
                 game.battle_engine.update_animation(game,this,self)
             },
             end:function(game,obj,self){self.vx=0}

@@ -277,10 +277,16 @@ let vice = {
                 if(this.frames==0){
                     this.frames=1//1 second
                 }
-                this.hitbox.w = 80;
+                let difference
+                if(self.direction==-1){
+                    difference=-60
+                }else{
+                    difference=0
+                }
+                this.hitbox.w = 60;
                 this.hitbox.h = self.h/1.5;
-                this.hitbox.x = self.x+100*self.direction;
-                this.hitbox.y = self.y+50;
+                this.hitbox.x = (self.x+self.w/2)+50*self.direction+(difference);
+                this.hitbox.y = (self.y+self.h/2);
                 self.image=this.animations[this.animation_frame].image
                 this.anim_frame_count+=game.dt
                 if(this.anim_frame_count>=this.animations[this.animation_frame].duration){
@@ -291,6 +297,7 @@ let vice = {
                             if(opponent.state!="knockdown"){
                                 game.playsound("assets/grab.wav")
                                 opponent.state="being thrown"
+                                opponent.health-=20
                                 opponent.states["being thrown"]={
                                     frames:0,
                                     offsetx:0,
@@ -307,7 +314,6 @@ let vice = {
                                         this.frames-=game.dt
                                         if(this.frames<=0||self.is_grounded==true){
                                             this.frames=0
-                                            self.health-=20
                                             self.knockdown()
                                         }
                                     }
