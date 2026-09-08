@@ -129,7 +129,7 @@ let vice = {
             total_frames:0.3,
             animations:[
                 {image:"attack.png",duration:0.1},
-                {image:"attack.png",duration:0.1,damage:5,knockback:-100,stun:0.4},
+                {image:"attack.png",duration:0.1,damage:5,knockback:-100,stun:0.4,freeze_frame:0.1},
                 {image:"attack.png",duration:0.1}
             ],
             offsetx:0,
@@ -346,11 +346,11 @@ let vice = {
             animations:[
                 {image:"special30.png",duration:0.1},
                 {image:"special31.png",duration:0.1,damage:15,knockdown:true,
-                    custom:function(game,obj,self){self.vx=400*self.direction}
+                    custom:function(game,obj,self){self.vx=400*self.direction},freeze_frame:0.2
                 },
-                {image:"special31.png",duration:0.1,damage:15,knockdown:true},
-                {image:"special31.png",duration:0.1,damage:15,knockdown:true},
-                {image:"special31.png",duration:0.1,damage:15,knockdown:true}
+                {image:"special31.png",duration:0.1,damage:15,knockdown:true,freeze_frame:0.2},
+                {image:"special31.png",duration:0.1,damage:15,knockdown:true,freeze_frame:0.2},
+                {image:"special31.png",duration:0.1,damage:15,knockdown:true,freeze_frame:0.2}
             ],
             offsetx:0,
             offsety:0,

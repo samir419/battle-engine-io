@@ -146,7 +146,7 @@ let mai = {
             combo_counter:0,
             animations:[
                 {image:"attack.png",duration:0.1},
-                {image:"attack.png",duration:0.1,damage:5,knockback:-100,stun:0.4},
+                {image:"attack.png",duration:0.1,damage:5,knockback:-100,stun:0.4,freeze_frame:0.1},
                 {image:"attack.png",duration:0.1}
             ],
             offsetx:0,
@@ -258,8 +258,8 @@ let mai = {
             animations:[
                 {image:"special20.png",duration:0.1},
                 {image:"special21.png",duration:0.1},
-                {image:"special22.png",duration:0.1,damage:10,knockback:-100},
-                {image:"special23.png",duration:0.1,damage:10,knockdown:true},
+                {image:"special22.png",duration:0.1,damage:10,knockback:-100,freeze_frame:0.2},
+                {image:"special23.png",duration:0.1,damage:10,knockdown:true,freeze_frame:0.2},
                 {image:"special24.png",duration:0.1},
                 {image:"special25.png",duration:0.1},
             ],
@@ -280,8 +280,8 @@ let mai = {
             total_frames:0.8,
             animations:[
                 {image:"special30.png",duration:0.1},
-                {image:"special31.png",duration:0.1,damage:15,knockdown:true},
-                {image:"special32.png",duration:0.1,damage:15,knockdown:true},
+                {image:"special31.png",duration:0.1,damage:15,knockdown:true,freeze_frame:0.2},
+                {image:"special32.png",duration:0.1,damage:15,knockdown:true,freeze_frame:0.2},
                 {image:"special34.png",duration:0.5},
             ],
             offsetx:0,
@@ -305,7 +305,7 @@ let mai = {
             hitbox:{x:0,y:0,w:0,h:0},
             total_frames:1,
             animations:[
-                {image:"ultimate.png",duration:0.1,damage:5},
+                {image:"ultimate.png",duration:0.1,damage:5,freeze_frame:0.2},
                 {image:"ultimate.png",duration:0.1,damage:5},
                 {image:"ultimate.png",duration:0.1,damage:5},
                 {image:"ultimate.png",duration:0.1,damage:5},
@@ -327,6 +327,7 @@ let mai = {
         },
         "jump special":{
             frames:0,
+            arial:true,
             animation_frame:0,
             anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
@@ -334,8 +335,8 @@ let mai = {
             temps:{},
             animations:[
                 {image:"jumpspecial.png",duration:0.1},
-                {image:"jumpspecial.png",duration:0.1,damage:15,knockdown:true},
-                {image:"jumpspecial.png",duration:0.1,damage:15,knockdown:true},
+                {image:"jumpspecial.png",duration:0.1,damage:15,knockdown:true,freeze_frame:0.3},
+                {image:"jumpspecial.png",duration:0.1,damage:15,knockdown:true,freeze_frame:0.3},
             ],
             offsetx:0,
             offsety:0,
@@ -352,6 +353,7 @@ let mai = {
         },
         "jump attack":{
             frames:0,
+            arial:true,
             animation_frame:0,
             anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
@@ -367,6 +369,7 @@ let mai = {
                                 knockback:0,
                                 knockdown:false,
                                 stun:0.6,
+                                freeze_frame:0.2
                             },game)
                             self.vy=-700
                         }
@@ -380,7 +383,8 @@ let mai = {
                                 damage:5,
                                 knockback:0,
                                 knockdown:false,
-                                stun:0.6
+                                stun:0.6,
+                                freeze_frame:0.2
                             },game)
                             self.vy=-700
                         }

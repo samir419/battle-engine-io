@@ -104,7 +104,7 @@ let lilith = {
             total_frames:0.3,
             animations:[
                 {image:"attack0.png",duration:0.1},
-                {image:"attack3.png",duration:0.1,damage:5,knockback:-100,stun:0.3},
+                {image:"attack3.png",duration:0.1,damage:5,knockback:-100,stun:0.3,freeze_frame:0.1},
                 {image:"attack4.png",duration:0.1}
             ],
             offsetx:0,
@@ -170,7 +170,8 @@ let lilith = {
                                     damage:10,
                                     knockback:0,
                                     knockdown:true,
-                                    stun:0.2
+                                    stun:0.2,
+                                    freeze_frame:0.2
                                 },game)
                                 this.frames=0
                                 let index = self.objects.indexOf(this)
@@ -234,11 +235,11 @@ let lilith = {
             total_frames:0.7,
             animations:[
                 {image:"special21.png",duration:0.1},
-                {image:"special20.png",duration:0.1,damage:5,knockback:-50},
+                {image:"special20.png",duration:0.1,damage:5,knockback:-50,freeze_frame:0.1},
                 {image:"special21.png",duration:0.1},
-                {image:"special20.png",duration:0.1,damage:5,knockback:-50},
+                {image:"special20.png",duration:0.1,damage:5,knockback:-50,freeze_frame:0.1},
                 {image:"special21.png",duration:0.1},
-                {image:"special20.png",duration:0.2,damage:5,knockback:-50},
+                {image:"special20.png",duration:0.2,damage:5,knockback:-50,freeze_frame:0.1},
                 {image:"special21.png",duration:0.1},
             ],
             offsetx:0,
@@ -269,11 +270,11 @@ let lilith = {
                         self.vx=100*self.direction
                         self.is_grounded=false
                         game.playsound("assets/strike.wav")
-                    }
+                    },freeze_frame:0.2
                 },
-                {image:"special3.png",duration:0.1,damage:25,knockdown:true},
-                {image:"special3.png",duration:0.1,damage:25,knockdown:true},
-                {image:"special3.png",duration:0.1,damage:25,knockdown:true},
+                {image:"special3.png",duration:0.1,damage:25,knockdown:true,freeze_frame:0.2},
+                {image:"special3.png",duration:0.1,damage:25,knockdown:true,freeze_frame:0.2},
+                {image:"special3.png",duration:0.1,damage:25,knockdown:true,freeze_frame:0.2},
             ],
             offsetx:0,offsety:0,
             hitbox_data:{x:-40,y:-50,w:120,h:30},
@@ -297,8 +298,8 @@ let lilith = {
             hitbox:{x:0,y:0,w:0,h:0},
             total_frames:1,
             animations:[
-                {image:"ultimate.png",duration:0.1,damage:5},
-                {image:"ultimate.png",duration:0.1,damage:5},
+                {image:"ultimate.png",duration:0.1,damage:5,freeze_frame:0.2},
+                {image:"ultimate.png",duration:0.1,damage:5,freeze_frame:0.2},
                 {image:"ultimate.png",duration:0.1,damage:5},
                 {image:"ultimate.png",duration:0.1,damage:5},
                 {image:"ultimate.png",duration:0.1,damage:5},
@@ -333,8 +334,8 @@ let lilith = {
             total_frames:0.4,
             animations:[
                 {image:"jumpattack0.png",duration:0.1},
-                {image:"jumpattack1.png",duration:0.1,damage:5,knockback:-100},
-                {image:"jumpattack2.png",duration:0.1,damage:5,knockback:-100,stun:0.5},
+                {image:"jumpattack1.png",duration:0.1,damage:5,knockback:-100,freeze_frame:0.2},
+                {image:"jumpattack2.png",duration:0.1,damage:5,knockback:-100,stun:0.5,freeze_frame:0.2},
                 {image:"jumpattack0.png",duration:0.1},
             ],
             offsetx:0,offsety:0,
@@ -356,7 +357,7 @@ let lilith = {
             total_frames:0.3,
             animations:[
                 {image:"medium0.png",duration:0.1,offset:{x:50,y:0}},
-                {image:"medium1.png",duration:0.1,offset:{x:50,y:0},damage:5,stun:0.5,knockback:0},
+                {image:"medium1.png",duration:0.1,offset:{x:50,y:0},damage:5,stun:0.5,knockback:0,freeze_frame:0.1},
                 {image:"medium1.png",duration:0.1,offset:{x:50,y:0}},
             ],
             offsetx:0,offsety:0,
@@ -380,7 +381,7 @@ let lilith = {
             total_frames:0.3,
             animations:[
                 {image:"heavy0.png",duration:0.1,offset:{x:50,y:0}},
-                {image:"heavy1.png",duration:0.1,offset:{x:50,y:0},damage:5,stun:0.5,knockback:0},
+                {image:"heavy1.png",duration:0.1,offset:{x:50,y:0},damage:5,stun:0.5,knockback:0,freeze_frame:0.1},
                 {image:"heavy1.png",duration:0.1,offset:{x:50,y:0}},
             ],
             offsetx:0,offsety:0,

@@ -118,7 +118,7 @@ let sakura = {
             total_frames:0.3,
             animations:[
                 {image:"attack0.png",duration:0.1},
-                {image:"attack1.png",duration:0.1,damage:5,knockback:-100,stun:0.4},
+                {image:"attack1.png",duration:0.1,damage:5,knockback:-100,stun:0.4,freeze_frame:0.1},
                 {image:"attack2.png",duration:0.1}
             ],
             offsetx:0,
@@ -252,11 +252,11 @@ let sakura = {
             total_frames:0.7,
             animations:[
                 {image:"special 2 0.png",duration:0.1},
-                {image:"special 2 1.png",duration:0.1,damage:5,knockback:-50},
+                {image:"special 2 1.png",duration:0.1,damage:5,knockback:-50,freeze_frame:0.1},
                 {image:"special 2 0.png",duration:0.1},
-                {image:"special 2 1.png",duration:0.1,damage:5,knockback:-70},
+                {image:"special 2 1.png",duration:0.1,damage:5,knockback:-70,freeze_frame:0.1},
                 {image:"special 2 0.png",duration:0.1},
-                {image:"special 2 1.png",duration:0.1,damage:5,knockback:-300},
+                {image:"special 2 1.png",duration:0.1,damage:5,knockback:-300,freeze_frame:0.1},
                 {image:"special 2 0.png",duration:0.1}
             ],
             offsetx:0,offsety:0,
@@ -282,17 +282,17 @@ let sakura = {
                 {image:"special30.png",duration:0.1},
                 {image:"special31.png",duration:0.1},
                 {image:"special32.png",duration:0.1},
-                {image:"special33.png",duration:0.1,damage:5,knockback:-100},
-                {image:"special34.png",duration:0.1,damage:5,knockback:-100},
-                {image:"special35.png",duration:0.1,damage:5,knockback:-100},
+                {image:"special33.png",duration:0.1,damage:5,knockback:-100,freeze_frame:0.1},
+                {image:"special34.png",duration:0.1,damage:5,knockback:-100,freeze_frame:0.1},
+                {image:"special35.png",duration:0.1,damage:5,knockback:-100,freeze_frame:0.1},
                 {image:"special36.png",duration:0.2,damage:10,knockdown:true,
                     custom:function(game,obj,self){
                         self.vy=-600
                         self.is_grounded=false
                     }
                 },
-                {image:"special37.png",duration:0.1,damage:10,knockdown:true},
-                {image:"special38.png",duration:0.1,damage:10,knockdown:true},
+                {image:"special37.png",duration:0.1,damage:10,knockdown:true,freeze_frame:0.2},
+                {image:"special38.png",duration:0.1,damage:10,knockdown:true,freeze_frame:0.2},
             ],
             offsetx:0,
             offsety:0,
@@ -318,6 +318,9 @@ let sakura = {
             update:function(self,game){
                 if(this.frames==0){
                     this.frames=1//1 second
+                    self.meter-=60
+                    game.playsound("assets/meterup.wav")
+                    game.freeze_frame(0.4)
                 }
                 self.image=this.animations[this.animation_frame].image
                 this.anim_frame_count+=game.dt
@@ -406,7 +409,7 @@ let sakura = {
             total_frames:0.3,
             animations:[
                 {image:"sweep.png",duration:0.1,offset:{x:50,y:0}},
-                {image:"sweep.png",duration:0.1,offset:{x:50,y:0},damage:5,stun:0.5,knockback:0},
+                {image:"sweep.png",duration:0.1,offset:{x:50,y:0},damage:5,stun:0.5,knockback:0,freeze_frame:0.1},
                 {image:"sweep.png",duration:0.1,offset:{x:50,y:0}},
             ],
             offsetx:0,
@@ -434,7 +437,7 @@ let sakura = {
             total_frames:0.3,
             animations:[
                 {image:"medium0.png",duration:0.1,offset:{x:50,y:0}},
-                {image:"medium1.png",duration:0.1,offset:{x:50,y:0},damage:5,stun:0.5,knockback:0},
+                {image:"medium1.png",duration:0.1,offset:{x:50,y:0},damage:5,stun:0.5,knockback:0,freeze_frame:0.1},
                 {image:"medium2.png",duration:0.1,offset:{x:50,y:0}},
             ],
             offsetx:0,offsety:0,

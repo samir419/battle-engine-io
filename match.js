@@ -18,7 +18,7 @@ let match = {
             this.actors[1].direction=-1
             this.actors[2].direction=1
         }
-        this.handle_player_collision(game)
+       
         this.handle_push_boundary_and_stage_scrolling(this.actors[0],this.actors[1],this.actors[2],game)
         this.handle_push_boundary_and_stage_scrolling(this.actors[0],this.actors[2],this.actors[1],game)
         //barrier_collision(this.actors[1],this.actors[2],game.canvas,this.actors[0],game)
@@ -27,6 +27,7 @@ let match = {
         //player_collision(this.actors[2],this.actors[1],game)
         if(this.ai_enabled){
             this.opponent_ai(game)
+            //this.player_ai(game)
         }
         if((this.actors[1].health<=0||this.actors[2].health<=0)&&this.format!="practice"){
             if(!this.temps.endtimer){
@@ -39,7 +40,9 @@ let match = {
             }
            
         }
-        
+
+        this.handle_player_collision(game)
+        game.physics.handle_hitbox_collision(this.actors,game)
     },
 
     create_match:function(chars){
@@ -112,7 +115,6 @@ let match = {
 
     opponent_ai:function(game){
         let p2 = this.actors[2]
-        let p1 = this.actors[1]
         let states = ["jump","dash","back dash","attack","block","idle","special 1","special 2","special 3","throw"]
         this.ai_routine += game.dt
 
@@ -121,10 +123,20 @@ let match = {
             if(p2.meter>=60){
                 p2.handle_input("ultimate", game)
             }
-            /*p1.set_state(states[Math.floor(Math.random()*states.length)])
+            this.ai_routine=0
+        }
+        
+    },
+    player_ai:function(game){
+        let p1 = this.actors[1]
+        let states = ["jump","dash","back dash","attack","block","idle","special 1","special 2","special 3","throw"]
+        this.ai_routine += game.dt
+
+        if(this.ai_routine>=1/this.difficulty){
+            p1.set_state(states[Math.floor(Math.random()*states.length)])
             if(p1.meter>=60){
                 p1.handle_input("ultimate", game)
-            }*/
+            }
             this.ai_routine=0
         }
         

@@ -6,6 +6,8 @@ let battle_engine={
                 damage:data.damage,
                 knockback:data.knockback?data.knockback:0,
                 knockdown:data.knockdown?data.knockdown:false,
+                freeze_frame:data.freeze_frame?data.freeze_frame:0,
+                stun:data.stun?data.stun:0.2
             },game)
             return true
         }
@@ -16,6 +18,7 @@ let battle_engine={
             obj.frames=obj.total_frames
             obj.init(game,obj,self)
             if(self.state=="ultimate"){
+                self.meter-=60
                 game.playsound("assets/meterup.wav")
                 game.freeze_frame(0.4)
             }
@@ -45,6 +48,7 @@ let battle_engine={
                         damage:current.damage,
                         knockback:current.knockback,
                         knockdown:current.knockdown?current.knockdown:false,
+                        freeze_frame:current.freeze_frame?current.freeze_frame:0,
                         stun:current.stun?current.stun:0.2
                     },game)
                 }

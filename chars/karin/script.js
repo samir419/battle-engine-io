@@ -119,7 +119,7 @@ let karin = {
             combo_counter:0,
             animations:[
                 {image:"attack.png",duration:0.1},
-                {image:"attack.png",duration:0.1,damage:5,knockback:-50,stun:0.4},
+                {image:"attack.png",duration:0.1,damage:5,knockback:-50,stun:0.4,freeze_frame:0.1},
                 {image:"attack.png",duration:0.1}
             ],
             offsetx:0,
@@ -151,8 +151,8 @@ let karin = {
             total_frames:0.4,
             animations:[
                 {image:"special10.png",duration:0.1},
-                {image:"special11.png",duration:0.1,damage:5,knockback:-100},
-                {image:"special12.png",duration:0.1,damage:5,knockback:-100,stun:0.5},
+                {image:"special11.png",duration:0.1,damage:5,knockback:-100,freeze_frame:0.2},
+                {image:"special12.png",duration:0.1,damage:5,knockback:-100,stun:0.5,freeze_frame:0.2},
                 {image:"special13.png",duration:0.1},
             ],
             offsetx:0,
@@ -181,8 +181,8 @@ let karin = {
             total_frames:0.4,
             animations:[
                 {image:"special14.png",duration:0.1},
-                {image:"special15.png",duration:0.1,damage:5,knockback:-100},
-                {image:"special16.png",duration:0.1,damage:5,knockback:-100,stun:0.5},
+                {image:"special15.png",duration:0.1,damage:5,knockback:-100,freeze_frame:0.2},
+                {image:"special16.png",duration:0.1,damage:5,knockback:-100,stun:0.5,freeze_frame:0.2},
                 {image:"special17.png",duration:0.1},
             ],
             offsetx:0,
@@ -211,8 +211,8 @@ let karin = {
             total_frames:0.4,
             animations:[
                 {image:"special18.png",duration:0.1},
-                {image:"special19.png",duration:0.1,damage:15,knockdown:true},
-                {image:"special110.png",duration:0.1,damage:15,knockdown:true},
+                {image:"special19.png",duration:0.1,damage:15,knockdown:true,freeze_frame:0.2},
+                {image:"special110.png",duration:0.1,damage:15,knockdown:true,freeze_frame:0.2},
                 {image:"special111.png",duration:0.1},
             ],
             offsetx:0,
@@ -241,10 +241,10 @@ let karin = {
                 {image:"special22.png",duration:0.1,damage:5,
                     custom:function(game,obj,self){
                         game.playsound("assets/strike.wav")
-                    }
+                    },freeze_frame:0.2
                 },
-                {image:"special23.png",duration:0.1,damage:5,},
-                {image:"special24.png",duration:0.1,damage:5,knockback:-200},
+                {image:"special23.png",duration:0.1,damage:5,freeze_frame:0.2},
+                {image:"special24.png",duration:0.1,damage:5,knockback:-200,freeze_frame:0.2},
                 {image:"special25.png",duration:0.1},
             ],
             offsetx:0,
@@ -312,14 +312,14 @@ let karin = {
             total_frames:1,
             animations:[
                 {image:"special10.png",duration:0.1},
-                {image:"special11.png",duration:0.1,damage:10,knockback:-100},
-                {image:"special12.png",duration:0.1,damage:10,knockback:-100,stun:0.5},
+                {image:"special11.png",duration:0.1,damage:10,knockback:-100,freeze_frame:0.2},
+                {image:"special12.png",duration:0.1,damage:10,knockback:-100,stun:0.5,freeze_frame:0.2},
                 {image:"special13.png",duration:0.1},
-                {image:"special15.png",duration:0.1,damage:10,knockback:-100},
-                {image:"special16.png",duration:0.1,damage:10,knockback:-100,stun:0.5},
+                {image:"special15.png",duration:0.1,damage:10,knockback:-100,freeze_frame:0.2},
+                {image:"special16.png",duration:0.1,damage:10,knockback:-100,stun:0.5,freeze_frame:0.2},
                 {image:"special17.png",duration:0.1},
-                {image:"special19.png",duration:0.1,damage:10,knockdown:true},
-                {image:"special110.png",duration:0.1,damage:10,knockdown:true},
+                {image:"special19.png",duration:0.1,damage:10,knockdown:true,freeze_frame:0.2},
+                {image:"special110.png",duration:0.1,damage:10,knockdown:true,freeze_frame:0.2},
                 {image:"special111.png",duration:0.1},
             ],
             offsetx:0,
@@ -344,7 +344,7 @@ let karin = {
             total_frames:0.3,
             animations:[
                 {image:"jumpattack.png",duration:0.1},
-                {image:"jumpattack.png",duration:0.1,damage:5,knockback:-50,stun:0.5},
+                {image:"jumpattack.png",duration:0.1,damage:5,knockback:-50,stun:0.5,freeze_frame:0.3},
                 {image:"jumpattack.png",duration:0.1}
             ],
             offsetx:0,
@@ -383,8 +383,8 @@ let karin = {
             animations:[
                 {image:"sweep0.png",duration:0.1,offset:{x:50,y:0}},
                 {image:"sweep1.png",duration:0.1,offset:{x:50,y:0}},
-                {image:"sweep2.png",duration:0.1,damage:10,knockdown:true,offset:{x:50,y:0}},
-                {image:"sweep2.png",duration:0.1,damage:10,knockdown:true,offset:{x:50,y:0}},
+                {image:"sweep2.png",duration:0.1,damage:10,knockdown:true,offset:{x:50,y:0},freeze_frame:0.2},
+                {image:"sweep2.png",duration:0.1,damage:10,knockdown:true,offset:{x:50,y:0},freeze_frame:0.2},
                 {image:"sweep1.png",duration:0.1,offset:{x:50,y:0}},
                 {image:"sweep0.png",duration:0.1,offset:{x:50,y:0}},
             ],

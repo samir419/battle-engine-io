@@ -155,7 +155,7 @@ let chunli = {
             total_frames:0.3,
             animations:[
                 {image:"attack.png",duration:0.1,offset:{x:50,y:0}},
-                {image:"attack.png",duration:0.1,damage:5,offset:{x:50,y:0},stun:0.4,knockback:-100},
+                {image:"attack.png",duration:0.1,damage:5,offset:{x:50,y:0},stun:0.4,knockback:-100,freeze_frame:0.2},
                 {image:"attack.png",duration:0.1,offset:{x:50,y:0}}
             ],
             offsetx:0,
@@ -299,16 +299,16 @@ let chunli = {
                         self.vx=0
                     }
                 },
-                {image:"special20.png",duration:0.1,damage:5,knockback:0},
+                {image:"special20.png",duration:0.1,damage:5,knockback:0,freeze_frame:0},
                 {image:"special21.png",duration:0.1},
-                {image:"special22.png",duration:0.1,damage:5,knockback:0},
+                {image:"special22.png",duration:0.1,damage:5,knockback:0,freeze_frame:0},
                 {image:"special21.png",duration:0.1},
-                {image:"special23.png",duration:0.1,damage:5,knockback:0,stun:0.4},
+                {image:"special23.png",duration:0.1,damage:5,knockback:0,stun:0.4,freeze_frame:0},
                 {image:"special21.png",duration:0.1},
                 {image:"special21.png",duration:0.1},
-                {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true},
-                {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true},
-                {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true},
+                {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true,freeze_frame:0.2},
+                {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true,freeze_frame:0.2},
+                {image:"special24.png",duration:0.1,damage:10,knockback:-300,knockdown:true,freeze_frame:0.2},
             ],
             offsetx:0,
             offsety:0,
@@ -332,17 +332,17 @@ let chunli = {
                 {image:"special30.png",duration:0.1},
                 {image:"special31.png",duration:0.05},
                 {image:"special32.png",duration:0.1},
-                {image:"special33.png",duration:0.1,damage:4,knockback:-50,stun:0.3},
+                {image:"special33.png",duration:0.1,damage:4,knockback:-50,stun:0.3,freeze_frame:0.1},
                 {image:"special34.png",duration:0.1},
-                {image:"special35.png",duration:0.1,damage:4,knockback:-50,stun:0.3},
+                {image:"special35.png",duration:0.1,damage:4,knockback:-50,stun:0.3,freeze_frame:0.1},
                 {image:"special36.png",duration:0.1},
-                {image:"special37.png",duration:0.1,damage:4,knockback:-50,stun:0.3},
+                {image:"special37.png",duration:0.1,damage:4,knockback:-50,stun:0.3,freeze_frame:0.1},
                 {image:"special33.png",duration:0.1},
-                {image:"special34.png",duration:0.1,damage:4,knockback:-50,stun:0.3},
+                {image:"special34.png",duration:0.1,damage:4,knockback:-50,stun:0.3,freeze_frame:0.1},
                 {image:"special35.png",duration:0.1},
-                {image:"special36.png",duration:0.1,damage:4,knockback:-50,stun:0.3},
+                {image:"special36.png",duration:0.1,damage:4,knockback:-50,stun:0.3,freeze_frame:0.1},
                 {image:"special37.png",duration:0.1},
-                {image:"special33.png",duration:0.1,damage:10,knockback:-200,stun:0.3},
+                {image:"special33.png",duration:0.1,damage:10,knockback:-200,stun:0.3,freeze_frame:0.1},
                 {image:"special38.png",duration:0.1},
                 {image:"special39.png",duration:0.1},
                 {image:"special310.png",duration:0.1},
@@ -404,7 +404,7 @@ let chunli = {
                     custom:function(game,obj,self){
                         game.playsound("assets/strike.wav")
                         self.vx=0
-                    },stun:0.5
+                    },stun:0.5,freeze_frame:0.2
                 },
                 {image:"special24.png",duration:0.1},
             ],
@@ -436,7 +436,8 @@ let chunli = {
                                 damage:5,
                                 knockback:0,
                                 knockdown:false,
-                                stun:0.2
+                                stun:0.2,
+                                freeze_frame:0.2
                             },game)
                             self.vy=-700
                         }
@@ -450,7 +451,8 @@ let chunli = {
                                 damage:5,
                                 knockback:0,
                                 knockdown:false,
-                                stun:0.2
+                                stun:0.2,
+                                freeze_frame:0.2
                             },game)
                             self.vy=-700
                         }

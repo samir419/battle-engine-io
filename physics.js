@@ -61,7 +61,24 @@ let physics = {
                  actor1.y + actor1.h <= actor2.y ||
                  actor1.y >= actor2.y + actor2.h)
     }
-    ,event:function(data){}
+    ,event:function(data){},
+    handle_hitbox_collision:function(actors,game){
+        return
+        for(let i=0;i<actors.length;i++){
+            for(let j=i+1;j<actors.length;j++){
+                
+            }
+        }
+    },
+    handle:function(actor1,actor2,game){
+        // simple AABB overlap test
+        if (!actor1 || !actor2) return false
+        if(actor2.enable_physics==false)return false
+        return !(actor1.x + actor1.w <= actor2.x ||
+                 actor1.x >= actor2.x + actor2.w ||
+                 actor1.y + actor1.h <= actor2.y ||
+                 actor1.y >= actor2.y + actor2.h)
+    }
 }
 function barrier_collision(player,player2,object,stage,game){
     if(player.x < 0){

@@ -38,7 +38,7 @@ let player = {
                 this.temp.vel_timer=null
             }
         }
-       this.states[this.state].update(this,game)
+        this.states[this.state].update(this,game)
        for(let i=0;i<this.objects.length;i++){
             let obj = this.objects[i]
             obj.update(this,game)
@@ -92,7 +92,6 @@ let player = {
     handle_input:function(inp,game){
         if(inp=="ultimate"){
             if(this.meter>=60){
-                this.meter-=60
                 this.set_state(inp)
             }
             return
@@ -102,7 +101,7 @@ let player = {
 
     set_state:function(state){
         if(this.state=="idle"){
-            this.state=state
+            this.state_buffer=state
             this.hit_max=0
         }else{
             this.state_buffer=state
@@ -155,19 +154,23 @@ let player = {
                 game.playsound("assets/hit.wav")
                 this.state="hit"
                 this.states["hit"].total_frames=data.stun
+                this.states["hit"].knockback=velx
                 this.states["hit"].frames=0
             }
-            game.freeze_frame(0.2)
+            game.freeze_frame(data.freeze_frame)
         }
         if(this.state=="block"){
             game.playsound("assets/blockhit.wav")
             damage=damage/4
             velx=velx/2
-            this.block_stun(data.stun/2)
+            this.state="block stun"
+            this.states["block stun"].total_frames=data.stun/2
+            this.states["block stun"].knockback=velx
+            this.states["block stun"].frames=0
             game.freeze_frame(0.2)
         }
         this.health-=damage
-        this.set_velocity({vx:velx,vy:0,duration:0.2})
+        //this.set_velocity({vx:velx,vy:0,duration:0.2})
         game.emit_event({name:"player-hit",player:this.id,amount:damage})
     },
 
@@ -186,11 +189,6 @@ let player = {
         "idle":{
             init:function(self,game){},
             update:function(self,game){
-                if(self.state_buffer!="none"){
-                    let x = self.state_buffer
-                    self.state=x
-                    self.state_buffer="none"
-                }
                 for (let key in this.states) {
                     if(this.states[key].frames){
                         this.states[key].frames=0
@@ -202,18 +200,34 @@ let player = {
                         this.states[key].animation_frame_count=0
                     }
                 }
+                self.vx=0
                 self.enable_physics=true
                 self.image="idle.png"
+                if(self.state_buffer!="none"){
+                    let x = self.state_buffer
+                    if(self.is_grounded==true){
+                        self.state=x
+                        self.state_buffer="none"
+                    }else{
+                        if(self.states[x].arial){
+                            self.state=x
+                            self.state_buffer="none"
+                        }
+                    }
+                   
+                }
+                
             }
         },
         "hit":{
             frames:0,
             total_frames:0.2,
+            knockback:0,
             update:function(self,game){
                 if(this.frames==0){
                     self.image="hit.png"
                     this.frames=this.total_frames
-                    self.vx=0
+                    self.vx=this.knockback*self.direction
                     self.hit_max+=1
                     if(self.hit_max>10){
                         self.knockdown()
@@ -222,8 +236,8 @@ let player = {
                 }
                 this.frames-=game.dt
                 if(this.frames<=0){
-                    self.vx=0
                     this.frames=0
+                    this.knockback=0
                     self.state="idle"
                 }
             }
@@ -239,15 +253,21 @@ let player = {
                 }
             }
         },
+       
         "block stun":{
+            frames:0,
+            total_frames:0.2,
+            knockback:0,
             update:function(self,game){
-                self.temp.block_stun_time-=game.dt
-                self.image="block.png"
-                if(self.x+self.w>game.canvas.width&&self.x<0){
-                    self.x+=50*-self.direction*game.dt
+                if(this.frames==0){
+                    self.image="block.png"
+                    this.frames=this.total_frames
+                    self.vx=this.knockback*self.direction
                 }
-                if(self.temp.block_stun_time<=0){
-                    self.temp.block_stun_time=0
+                this.frames-=game.dt
+                if(this.frames<=0){
+                    this.frames=0
+                    this.knockback=0
                     self.state="block"
                 }
             }
