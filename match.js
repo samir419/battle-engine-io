@@ -27,7 +27,7 @@ let match = {
         //player_collision(this.actors[2],this.actors[1],game)
         if(this.ai_enabled){
             this.opponent_ai(game)
-            //this.player_ai(game)
+            this.player_ai(game)
         }
         if((this.actors[1].health<=0||this.actors[2].health<=0)&&this.format!="practice"){
             if(!this.temps.endtimer){

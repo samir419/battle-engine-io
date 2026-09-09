@@ -141,12 +141,15 @@ game.event=(data)=>{
             let p1 = game.chars[Math.floor(Math.random()*game.chars.length)]
             let p2 = game.chars[Math.floor(Math.random()*game.chars.length)]
             game.match.create_match([p1,p2])
+            if(game.match.difficulty<5){
+                game.match.difficulty+=0.25
+            }
         }else{
             let p1 = chosen_player
             let p2 = game.chars[Math.floor(Math.random()*game.chars.length)]
             game.match.create_match([p1,p2])
             if(game.match.difficulty<5){
-                game.match.difficulty++
+                game.match.difficulty+=0.25
             }
         }
     }

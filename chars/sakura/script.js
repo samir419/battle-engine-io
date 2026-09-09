@@ -249,9 +249,14 @@ let sakura = {
             animation_frame:0,
             anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
-            total_frames:0.7,
+            total_frames:0.75,
             animations:[
                 {image:"special 2 0.png",duration:0.1},
+                {image:"special 2 1.png",duration:0.05,custom:function(game,obj,self){
+                    self.vx=250*self.direction
+                    self.vy=-400
+                    self.is_grounded=false
+                }},
                 {image:"special 2 1.png",duration:0.1,damage:5,knockback:-50,freeze_frame:0.1},
                 {image:"special 2 0.png",duration:0.1},
                 {image:"special 2 1.png",duration:0.1,damage:5,knockback:-70,freeze_frame:0.1},
@@ -263,9 +268,7 @@ let sakura = {
             hitbox_data:{x:-50,y:-20,w:100,h:30},
             init:function(game,obj,self){
                 game.playsound("assets/strike.wav")
-                self.vx=250*self.direction
-                self.vy=-400
-                self.is_grounded=false
+               
             },
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
@@ -277,9 +280,12 @@ let sakura = {
             animation_frame:0,
             anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
-            total_frames:1,
+            total_frames:1.05,
             animations:[
                 {image:"special30.png",duration:0.1},
+                 {image:"special31.png",duration:0.05,custom:function(game,obj,self){
+                    self.vx=200*self.direction
+                }},
                 {image:"special31.png",duration:0.1},
                 {image:"special32.png",duration:0.1},
                 {image:"special33.png",duration:0.1,damage:5,knockback:-100,freeze_frame:0.1},
@@ -298,7 +304,7 @@ let sakura = {
             offsety:0,
             hitbox_data:{x:0,y:-50,w:70,h:50},
             init:function(game,obj,self){
-                self.vx=200*self.direction
+               
             },
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)

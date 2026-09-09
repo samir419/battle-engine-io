@@ -296,6 +296,53 @@ let akuma = {
             animation_frame:0,
             anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.05,
+            animations:[
+                {image:"idle.png",duration:0.05},
+            ],
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:0,y:0,w:0,h:0},
+            init:function(game,obj,self){
+                
+            },
+            update:function(self,game){
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){
+                self.state="demon dash"
+            }
+        },
+        "demon dash":{
+            frames:0,
+            animation_frame:0,
+            anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:1,
+            animations:[
+                {image:"dash.png",duration:1},
+            ],
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:0,y:0,w:60,h:20},
+            init:function(game,obj,self){},
+            update:function(self,game){
+                self.vx=400*self.direction
+                let opponent=game.match.get_opponent(self,game)
+                if(game.physics.aabb(this.hitbox,opponent,game)){
+                    self.vx=0
+                    game.playsound("assets/grab.wav")
+                    self.state="demon combo"
+                }
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){}
+        },
+        "demon combo":{
+            frames:0,
+            animation_frame:0,
+            anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
             total_frames:1,
             animations:[
                 {image:"ultimate.png",duration:0.1,damage:10,knockback:0,knockdown:false,freeze_frame:0},
@@ -312,9 +359,12 @@ let akuma = {
             offsetx:0,
             offsety:0,
             hitbox_data:{x:-100,y:-100,w:320,h:320},
-            init:function(game,obj,self){},
+            init:function(game,obj,self){
+                
+            },
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
+                self.meter=0
             },
             end:function(game,obj,self){}
         },

@@ -100,6 +100,11 @@ let player = {
     },
 
     set_state:function(state){
+        if(this.state!=state){
+            this.states[state].frames=0
+            this.states[state].animation_frame=0
+            this.states[state].anim_frame_count=0
+        }
         if(this.state=="idle"){
             this.state_buffer=state
             this.hit_max=0

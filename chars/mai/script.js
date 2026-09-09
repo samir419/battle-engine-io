@@ -327,28 +327,31 @@ let mai = {
         },
         "jump special":{
             frames:0,
-            arial:true,
             animation_frame:0,
             anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
-            total_frames:0.3,
-            temps:{},
+            total_frames:0.4,
             animations:[
                 {image:"jumpspecial.png",duration:0.1},
-                {image:"jumpspecial.png",duration:0.1,damage:15,knockdown:true,freeze_frame:0.3},
-                {image:"jumpspecial.png",duration:0.1,damage:15,knockdown:true,freeze_frame:0.3},
+                {image:"jumpspecial.png",duration:0.05,
+                    custom:function(game,obj,self){
+                        self.vx=200*self.direction
+                        self.vy=200
+                    }
+                },
+                {image:"jumpspecial.png",duration:0.15,damage:15,knockback:-100,knockdown:true,stun:0.5,freeze_frame:0.1},
+                {image:"jumpspecial.png",duration:0.1,damage:15,knockback:-100,knockdown:true,stun:0.5,freeze_frame:0.1}
             ],
             offsetx:0,
             offsety:0,
             hitbox_data:{x:0,y:0,w:80,h:60},
-            init:function(game,obj,self){
-                self.set_velocity({vx:200*self.direction,vy:200,duration:0.3})
-            },
+            init:function(game,obj,self){},
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
             },
             end:function(game,obj,self){
                 self.vx=0
+                self.vy=0
             }
         },
         "jump attack":{

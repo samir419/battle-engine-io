@@ -74,8 +74,14 @@ let maki = {
                 self.vx=300*self.direction
                 game.battle_engine.update_animation(game,this,self)
                 if(self.state_buffer!="none"){
-                    let x = self.state_buffer
-                    self.state=x
+                    if(self.state_buffer=="special 1"){
+                        self.state="dash special"
+                    }else if(self.state_buffer=="special 2"){
+                        self.state="dash special 2"
+                    }else{
+                        let x = self.state_buffer
+                        self.state=x
+                    }
                     self.state_buffer="none"
                 }
             },
@@ -190,16 +196,49 @@ let maki = {
             hitbox:{x:0,y:0,w:0,h:0},
             total_frames:1,
             animations:[
-                {image:"idle.png",duration:1},
+                {image:"jump0.png",duration:0.5},
+                {image:"jump1.png",duration:0.5}
             ],
             offsetx:0,
             offsety:0,
             hitbox_data:{x:0,y:0,w:0,h:0},
-            init:function(game,obj,self){},
+            init:function(game,obj,self){
+                self.vx=300*self.direction
+                self.vy=-500
+                self.is_grounded=false
+                game.playsound("assets/jump.wav")
+            },
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)
+                if(self.state_buffer=="attack"){
+                    self.state="jump attack"
+                    self.state_buffer="none"
+                    this.anim_frame_count=0
+                    this.animation_frame=0
+                    this.frames=0
+                    return
+                }
+                if(self.state_buffer=="throw"||self.state_buffer=="special 1"){
+                    self.state="throw"
+                    self.state_buffer="none"
+                    this.anim_frame_count=0
+                    this.animation_frame=0
+                    this.frames=0
+                    return
+                }
+                if(self.is_grounded==true){
+                    self.state="idle"
+                    this.anim_frame_count=0
+                    this.animation_frame=0
+                    this.frames=0
+                    self.vx=0
+                    self.vy=0
+                }
             },
-            end:function(game,obj,self){}
+            end:function(game,obj,self){
+                self.vx=0
+                self.vy=0
+            }
         },
         "special 2":{
             frames:0,
@@ -386,6 +425,56 @@ let maki = {
                 self.vx=0
                 self.vy=0
             }
+        },
+        "dash special":{
+            frames:0,
+            animation_frame:0,
+            anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.7,
+            animations:[
+                {image:"dashspecial0.png",duration:0.1},
+                {image:"dashspecial1.png",duration:0.1},
+                {image:"dashspecial2.png",duration:0.1,damage:5,knockback:-100,knockdown:false,stun:0.5,freeze_frame:0.1},
+                {image:"dashspecial2.png",duration:0.1,damage:5,knockback:-100,knockdown:false,stun:0.5,freeze_frame:0.1},
+                {image:"dashspecial2.png",duration:0.1,damage:5,knockback:-100,knockdown:true,stun:0.5,freeze_frame:0.1},
+                {image:"dashspecial3.png",duration:0.2}
+            ],
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:0,y:30,w:60,h:20},
+            init:function(game,obj,self){},
+            update:function(self,game){
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){}
+        },
+        "dash special 2":{
+            frames:0,
+            animation_frame:0,
+            anim_frame_count:0,
+            hitbox:{x:0,y:0,w:0,h:0},
+            total_frames:0.8,
+            animations:[
+                {image:"dashspecial20.png",duration:0.05},
+                {image:"dashspecial20.png",duration:0.05,custom:function(game,obj,self){
+                    self.vy=-500
+                }},
+                {image:"dashspecial21.png",duration:0.1},
+                {image:"dashspecial22.png",duration:0.1,damage:5,knockback:-100,knockdown:false,stun:0.5,freeze_frame:0.1},
+                {image:"dashspecial22.png",duration:0.1,damage:5,knockback:-100,knockdown:false,stun:0.5,freeze_frame:0.1},
+                {image:"dashspecial22.png",duration:0.1,damage:5,knockback:-100,knockdown:true,stun:0.5,freeze_frame:0.1},
+                {image:"dashspecial22.png",duration:0.1,damage:5,knockback:-100,knockdown:true,stun:0.5,freeze_frame:0.1},
+                {image:"dashspecial23.png",duration:0.2}
+            ],
+            offsetx:0,
+            offsety:0,
+            hitbox_data:{x:0,y:30,w:60,h:40},
+            init:function(game,obj,self){},
+            update:function(self,game){
+                game.battle_engine.update_animation(game,this,self)
+            },
+            end:function(game,obj,self){}
         },
         "example":{
             frames:0,
