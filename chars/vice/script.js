@@ -108,6 +108,7 @@ let vice = {
             hitbox_data:{x:40,y:-15,w:50,h:120},
             init:function(game,obj,self){
                 self.enable_physics=false
+                self.invincible=true
                 this.temps.func=self.hit
                 this.temps.direction=-self.direction
                 self.hit=function(){}
@@ -118,6 +119,7 @@ let vice = {
             },
             end:function(game,obj,self){
                 self.enable_physics=true
+                self.invincible=false
                 self.hit=this.temps.func
             }
         },
@@ -377,6 +379,9 @@ let vice = {
             update:function(self,game){
                 if(this.frames==0){
                     this.frames=0.2//1 second
+                    self.meter-=60
+                    game.playsound("assets/meterup.wav")
+                    game.freeze_frame(0.4)
                 }
                 this.hitbox.w = self.w;
                 this.hitbox.h = self.h;

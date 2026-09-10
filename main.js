@@ -14,7 +14,9 @@ game.char_paths=[
     "chars/mai",
     "chars/karin",
     "chars/akuma",
-    "chars/maki"
+    "chars/maki",
+    "chars/rose",
+    "chars/griffon"
 ]
 game.chars=[]
 for(let i=0;i<game.char_paths.length;i++){

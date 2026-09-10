@@ -213,7 +213,7 @@ let hibiki = {
             offsety:0,
             hitbox_data:{x:30,y:0,w:59,h:103},
             init:function(game,obj,self){
-                self.enable_physics=false
+                self.invincible=true
                 self.vx=0
                 self.vy=0
                 game.playsound("assets/strike.wav")
@@ -225,6 +225,7 @@ let hibiki = {
                     self.state=x
                     self.state_buffer="none"
                     self.enable_physics=true
+                    self.invincible=false
                     this.frames=0
                     this.anim_frame_count=0
                     this.animation_frame=0
@@ -232,7 +233,7 @@ let hibiki = {
                 }
             },
             end:function(game,obj,self){
-                self.enable_physics=true
+                self.invincible=false
             }
         },
         "ultimate":{

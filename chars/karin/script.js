@@ -291,6 +291,7 @@ let karin = {
             hitbox_data:{x:0,y:0,w:0,h:0},
             init:function(game,obj,self){
                 self.enable_physics=false
+                self.invincible=true
                 this.temps.func=self.hit
                 this.temps.direction=self.direction
                 self.hit=function(){}
@@ -301,6 +302,7 @@ let karin = {
             },
             end:function(game,obj,self){
                 self.enable_physics=true
+                self.invincible=false
                 self.hit=this.temps.func
             }
         },

@@ -243,8 +243,9 @@ let akuma = {
             animation_frame:0,
             anim_frame_count:0,
             hitbox:{x:0,y:0,w:0,h:0},
-            total_frames:1,
+            total_frames:1.15,
             animations:[
+                {image:"special2.png",duration:0.15},
                 {image:"special20.png",duration:0.1},
                 {image:"special21.png",duration:0.1,damage:10,knockback:-100,knockdown:false,freeze_frame:0.1},
                 {image:"special22.png",duration:0.1},
@@ -398,14 +399,14 @@ let akuma = {
             total_frames:0.5,
             animations:[
                 {image:"overhead0.png",duration:0.1},
-                {image:"overhead1.png",duration:0.1},
+                {image:"overhead1.png",duration:0.1,damage:5,knockback:100,knockdown:false,stun:0.3,freeze_frame:0.2},
                 {image:"overhead2.png",duration:0.1,damage:5,knockback:100,knockdown:false,stun:0.3,freeze_frame:0.2},
                 {image:"overhead3.png",duration:0.1,damage:5,knockback:100,knockdown:false,stun:0.3,freeze_frame:0.2},
                 {image:"overhead4.png",duration:0.1},
             ],
             offsetx:0,
             offsety:0,
-            hitbox_data:{x:0,y:0,w:70,h:10},
+            hitbox_data:{x:0,y:-80,w:70,h:90},
             init:function(game,obj,self){},
             update:function(self,game){
                 game.battle_engine.update_animation(game,this,self)

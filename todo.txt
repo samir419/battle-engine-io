@@ -1,0 +1,8 @@
+add tournament feature where random characters are arranged in a bracket. select which characters are player controlled and which arent
+
+add a replay mode where inputs are recorded and stored in a data structure which can be exported into a file. 
+play replays by creating a match instance and inputing the pre recorded inputs on each frame
+
+post-match ui page that shows replay options
+
+character portraits in character select screen
